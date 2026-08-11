@@ -1,0 +1,4 @@
+* text=auto
+
+# Git hooks are executed by sh and must not carry CRLF line endings.
+.githooks/* text eol=lf

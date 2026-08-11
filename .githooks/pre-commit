@@ -1,0 +1,5 @@
+#!/bin/sh
+# Runs the full verification suite before a commit is created.
+# Enable with: npm run hooks:install
+set -e
+npm run verify

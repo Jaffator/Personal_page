@@ -1,0 +1,37 @@
+{
+  "name": "personal-site",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint --max-warnings 0",
+    "validate:markup": "html-validate \"out/**/*.html\"",
+    "serve:built": "serve out --listen 4321 --no-clipboard --no-port-switching",
+    "test": "playwright test",
+    "verify": "npm run typecheck && npm run lint && npm run build && npm run validate:markup && npm run test",
+    "hooks:install": "git config core.hooksPath .githooks"
+  },
+  "dependencies": {
+    "next": "16.3.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.12.1",
+    "@playwright/test": "^1.62.1",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^20.19.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "chrome-launcher": "^1.2.1",
+    "eslint": "^9.39.0",
+    "eslint-config-next": "16.3.0",
+    "html-validate": "^11.6.2",
+    "lighthouse": "^13.4.1",
+    "serve": "^14.2.6",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.0"
+  }
+}
