@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { resolvedProofLinks, type Project } from "@/app/_content/projects";
+import type { Project } from "@/app/_content/projects";
 import { dictionaries } from "@/app/_locale/dictionaries";
 import { pathTo, type Locale } from "@/app/_locale/routes";
+import { ProofLinks } from "./proof-links";
 
 /**
  * One Project in Selected Work.
@@ -50,21 +51,9 @@ export function ProjectRow({ project, locale }: { project: Project; locale: Loca
         ))}
       </ul>
 
-      {/* Only the Proof Links that point somewhere. A modelled-but-absent one
-          — the Google Play listing, until BikeCheck is published — renders
-          nothing at all rather than an empty slot. */}
-      <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-small">
-        {resolvedProofLinks(project).map((link) => (
-          <li key={link.kind}>
-            <a className="link" href={link.href} rel="noreferrer">
-              {strings.proofLinks[link.kind]}
-            </a>
-            {link.note ? (
-              <span className="text-muted"> — {link.note[locale]}</span>
-            ) : null}
-          </li>
-        ))}
-      </ul>
+      {/* Only the Proof Links that point somewhere — see `ProofLinks`, which
+          the hero shares, so an absent one renders nothing in both places. */}
+      <ProofLinks project={project} locale={locale} spacing="mt-6" />
     </article>
   );
 }

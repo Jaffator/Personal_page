@@ -92,3 +92,27 @@ export const projects: readonly Project[] = [
 export function resolvedProofLinks(project: Project): readonly ProofLink[] {
   return project.proofLinks.filter((link) => link.href !== undefined);
 }
+
+/**
+ * The first Project in the collection — the one the hero's claim rests on and
+ * whose name, description and Proof Links it carries.
+ *
+ * Position rather than a lookup by slug: the array's order is the site's
+ * running order, so the hero follows whatever is put at the front. A slug here
+ * would keep pointing at BikeCheck on the day lufihome is placed ahead of it.
+ *
+ * It throws rather than returning `undefined` because an empty collection is
+ * not a state the site has a design for — the hero would render its positioning
+ * with no work behind it, which is the one thing it exists to avoid. `projects`
+ * is a module-scope constant, so this fails the build that emptied it rather
+ * than a page in front of a Reader.
+ */
+export function firstProject(): Project {
+  const first = projects[0];
+  if (!first) {
+    throw new Error(
+      "The projects collection is empty, so the hero has no work to stand on. Add a Project in app/_content/projects.ts.",
+    );
+  }
+  return first;
+}

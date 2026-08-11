@@ -6,7 +6,7 @@
 | ------------------ | ----------------------------------------------------------------------- |
 | `typecheck`        | No type errors in the site or the tests (`.ts`/`.tsx`; everything under `scripts/` is plain `.mjs` and is not typechecked). |
 | `lint`             | No ESLint errors **or warnings** (`--max-warnings 0`).                   |
-| `check:tokens`     | No raw colour, arbitrary value or inline style in component code — everything names a token. See [design-system.md](design-system.md). |
+| `check:tokens`     | No raw colour, arbitrary value or inline style in component code, in `mdx-components.tsx`, or in a `.mdx` prose document — everything names a token. See [design-system.md](design-system.md). |
 | `build`            | A production build completes with no errors and no warnings, into `out/`. |
 | `validate:markup`  | Every built HTML file is valid markup.                                   |
 | `test`             | The built site passes accessibility, design-system, keyboard, viewport, locale and audit checks, in every locale. |
@@ -47,6 +47,15 @@ passes accessibility, overflow and audit checks quite happily.
   one by more than colour, and lands on the equivalent page rather than the
   home page; and both versions declare each other with reciprocal `hreflang`.
   See [locale.md](locale.md).
+- **`tests/hero.spec.ts`** — the hero is a named landmark carrying the page's
+  level-1 heading, a positioning statement and the stack; it makes no Google
+  Play claim while that Proof Link has no value; it names Capacitor and never
+  React Native; it puts no junior or first-role label on its author; its Proof
+  Links come from content rather than being placed by hand, are named clearly
+  enough to be understood from the link alone, and stay visually secondary to
+  the heading; and the Czech hero is written rather than left in English. The
+  accuracy checks read the whole of `main`, because it does not matter which
+  component would have introduced a false claim. See [content.md](content.md).
 - **`tests/selected-work.spec.ts`** — Selected Work is a named landmark
   listing at least one Project; every Project carries a title, a description,
   stack tags and a link through to its Case Study in the same locale; the
@@ -54,6 +63,14 @@ passes accessibility, overflow and audit checks quite happily.
   no value renders nothing — no Google Play link, no empty slot. Assertions are
   per rendered Project rather than about BikeCheck, so a second Project is held
   to the same bar without a line changing here. See [content.md](content.md).
+- **`tests/case-study.spec.ts`** — the Case Study renders at its own URL in both
+  locales and composes its parts in order; the Deep Dive repeats three times as
+  one unit, each making all four moves under the same labels; a captioned figure
+  sits inside a Deep Dive with its caption attached by `figcaption`; the
+  Walkthrough slot renders nothing at all while empty; the heading outline skips
+  no level; and the two locales are not the same text. Assertions are by
+  structure rather than by wording, so ticket 14 can rewrite every word without
+  touching this file. See [content.md](content.md).
 - **`tests/not-found.spec.ts`** — an unknown path answers 404 with the site's
   own page, not the framework's, and is scanned by axe in both themes. It sits
   outside `routes.ts` because it is the one page that must not return 200.

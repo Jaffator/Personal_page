@@ -34,10 +34,71 @@ export const en = {
     },
   } satisfies Record<RouteKey, { title: string; description: string }>,
 
-  home: {
-    eyebrow: "In progress",
-    heading: "Jaroslav Lufinka",
-    lede: "This site is under construction. It will present BikeCheck — an Android application built with Capacitor — as a Case Study.",
+  /**
+   * The hero: the opening statement everything below it is graded against.
+   *
+   * Three deliberate absences, each of which a Reader would otherwise catch or
+   * hold against it. No level label — no "junior", no "looking for my first
+   * role" — because the Case Study below is what sets the level, and a label
+   * here decides the question before a Reader has read any of it. No claim of a
+   * Google Play listing, because there is not one. And the technology is
+   * Capacitor, never React Native: they are different, and it is the kind of
+   * claim that gets checked.
+   *
+   * Everything here is interface by the test in docs/content.md: it is about
+   * the author, not about a Project, so it would still be here with no
+   * Projects at all. What BikeCheck *is* stays in `app/_content/projects.ts` —
+   * the hero renders that Project's own description rather than restating it,
+   * so the two cannot drift into two different accounts of one application.
+   */
+  hero: {
+    /** The location, in the metadata register. Fact, not claim. */
+    eyebrow: "Full-stack developer — Jablonec nad Nisou",
+    name: "Jaroslav Lufinka",
+    /**
+     * The positioning. "From the job queue to the screen" is the specific form
+     * of end-to-end being claimed, and it is the one the Case Study's Deep
+     * Dives actually evidence.
+     */
+    positioning:
+      "I build products end to end — from the job queue to the screen. Not one layer handed off to someone else.",
+    /**
+     * Frames the Project the claim rests on, and carries the one thing the
+     * spec requires be said about authorship: he designed and built it. That
+     * is a fact about the author, which is why it is here and not in the
+     * Project's description. What the application *does* follows from content.
+     */
+    projectLead: "Designed and built by me:",
+  },
+
+  /**
+   * The furniture around a Case Study: the headings naming each part, and the
+   * labels for the four moves of a Deep Dive. The prose itself is not here and
+   * must not migrate in — it lives in MDX per locale (ADR 0002).
+   *
+   * These are interface rather than content by the test in docs/content.md:
+   * they would still be here with no Projects at all, because they name the
+   * shape every Case Study has rather than describing any one Project.
+   */
+  caseStudy: {
+    eyebrow: "Case Study",
+    /** Titles the Walkthrough once ticket 08 lands. Unused while the slot is empty. */
+    walkthrough: "Watch it run",
+    architecture: "How it is built",
+    featureTour: "What it does",
+    deepDives: "The hard parts",
+    retrospective: "Looking back",
+    /**
+     * The four moves of a Deep Dive, in the metadata register. They repeat for
+     * every Deep Dive on the page, which is what makes the set read as one
+     * kind of thing rather than three essays.
+     */
+    deepDive: {
+      constraint: "The constraint",
+      options: "Options weighed",
+      choice: "The choice",
+      cost: "What it cost",
+    },
   },
 
   /**

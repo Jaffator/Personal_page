@@ -1,4 +1,5 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
+import { DEAD_LINK_SELECTOR, GOOGLE_PLAY_HOST, SOURCE_URL } from "./proof";
 import { equivalentOf, routes, type Locale, type Route } from "./routes";
 import { visitRoute } from "./visit";
 
@@ -16,17 +17,6 @@ import { visitRoute } from "./visit";
  */
 
 const HOME = routes.filter((route) => route.key === "home");
-
-/**
- * The Project's own repository. Written out rather than imported from the
- * content module for the same reason `routes.ts` is written out by hand: a
- * check that read the URL from the source it is checking would agree with a
- * typo in it, and this is a link a Reader follows off the site.
- */
-const SOURCE_URL = "https://github.com/Jaffator/BikeCheck";
-
-/** Every host a Google Play listing could be published under. */
-const GOOGLE_PLAY_HOST = "play.google.com";
 
 function selectedWork(page: Page): Locator {
   return page.getByRole("region", { name: /selected work|vybran/i });
@@ -170,7 +160,7 @@ test.describe("Proof Links", () => {
       ).toHaveCount(0);
 
       await expect(
-        selectedWork(page).locator("a:not([href]), a[href=''], a[href='#']"),
+        selectedWork(page).locator(DEAD_LINK_SELECTOR),
         `Selected Work on ${route.path} renders a link with nowhere to go, so a Proof Link with no value left an empty slot behind.`,
       ).toHaveCount(0);
     });

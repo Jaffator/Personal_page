@@ -22,10 +22,34 @@ export const cs: Dictionary = {
     },
   },
 
-  home: {
-    eyebrow: "Ve výstavbě",
-    heading: "Jaroslav Lufinka",
-    lede: "Tento web se právě staví. Představí BikeCheck — androidovou aplikaci postavenou na Capacitoru — jako případovou studii.",
+  /**
+   * Written as Czech, not translated from the English above. "Full-stack
+   * vývojář" is what a Czech job advert says and what a Czech Reader scans for;
+   * "vývojář plného zásobníku" is not a phrase anyone uses. The positioning
+   * keeps the concrete image — "od fronty úloh až po obrazovku" — rather than
+   * flattening it into an abstraction, because the image is the claim.
+   */
+  hero: {
+    eyebrow: "Full-stack vývojář — Jablonec nad Nisou",
+    name: "Jaroslav Lufinka",
+    positioning:
+      "Stavím produkty od začátku do konce — od fronty úloh až po obrazovku. Ne jednu vrstvu, kterou pak někdo převezme.",
+    projectLead: "Navrhl a postavil jsem:",
+  },
+
+  caseStudy: {
+    eyebrow: "Případová studie",
+    walkthrough: "Podívejte se, jak běží",
+    architecture: "Jak je to postavené",
+    featureTour: "Co to umí",
+    deepDives: "Těžké části",
+    retrospective: "Ohlédnutí",
+    deepDive: {
+      constraint: "Omezení",
+      options: "Zvažované možnosti",
+      choice: "Rozhodnutí",
+      cost: "Co to stálo",
+    },
   },
 
   selectedWork: {
