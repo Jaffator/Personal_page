@@ -17,7 +17,7 @@ export const locales = ["en", "cs"] as const;
 export type Locale = (typeof locales)[number];
 
 /** Named so a typo in the inventory below is a typecheck failure, not a throw. */
-export type RouteKey = "home";
+export type RouteKey = "home" | "caseStudy";
 
 export type Route = {
   /** Identifies the same page across locales. */
@@ -30,6 +30,8 @@ export type Route = {
 export const routes: readonly Route[] = [
   { key: "home", locale: "en", path: "/" },
   { key: "home", locale: "cs", path: "/cs" },
+  { key: "caseStudy", locale: "en", path: "/bikecheck" },
+  { key: "caseStudy", locale: "cs", path: "/cs/bikecheck" },
 ];
 
 /** The same page in another locale — what the language switch must land on. */

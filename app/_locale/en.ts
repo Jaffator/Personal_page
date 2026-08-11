@@ -1,3 +1,4 @@
+import type { ProofLinkKind } from "@/app/_content/projects";
 import type { RouteKey } from "./routes";
 
 /**
@@ -26,14 +27,43 @@ export const en = {
       description:
         "Jaroslav Lufinka builds software. This site presents BikeCheck, an Android application built with Capacitor, in depth.",
     },
+    caseStudy: {
+      title: "BikeCheck — Case Study",
+      description:
+        "How BikeCheck was built: an Android application for bicycle service history, from the domain model through to the decisions it cost.",
+    },
   } satisfies Record<RouteKey, { title: string; description: string }>,
 
   home: {
     eyebrow: "In progress",
     heading: "Jaroslav Lufinka",
     lede: "This site is under construction. It will present BikeCheck — an Android application built with Capacitor — as a Case Study.",
-    source: "Source on GitHub",
   },
+
+  /**
+   * The Selected Work section. Project titles, descriptions and Proof Link
+   * notes are not here — those are content, and live in `app/_content/`.
+   * What is here is the furniture around them, which is interface.
+   */
+  selectedWork: {
+    heading: "Selected Work",
+    /** The section index, in the monospace register the design system reserves for metadata. */
+    index: "01",
+    /** Names the section for a screen reader jumping between landmarks. */
+    label: "Selected Work",
+    /** Reads after the Project's title: "Read the BikeCheck case study". */
+    readCaseStudy: "Read the case study",
+  },
+
+  /**
+   * What each kind of Proof Link is called. Keyed by `ProofLinkKind`, so a new
+   * kind must be named in every locale before the build passes — including one
+   * that carries no URL yet.
+   */
+  proofLinks: {
+    source: "Source on GitHub",
+    googlePlay: "Get it on Google Play",
+  } satisfies Record<ProofLinkKind, string>,
 };
 
 /**

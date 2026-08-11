@@ -16,16 +16,21 @@ export type Locale = (typeof locales)[number];
 /** The locale served from the root, and the one `x-default` points at. */
 export const defaultLocale: Locale = "en";
 
-export const routeKeys = ["home"] as const;
+export const routeKeys = ["home", "caseStudy"] as const;
 export type RouteKey = (typeof routeKeys)[number];
 
 /**
  * Where each route sits inside a locale, as path segments and without the
  * locale prefix. The home page is the empty path, which is the only reason
  * this is a segment list rather than a string.
+ *
+ * The Case Study's segment is the Project's slug, and the same slug in both
+ * locales: it is the URL pasted into a job application, so it stays stable and
+ * recognisable rather than translating into a second address for one page.
  */
 const ROUTE_SEGMENTS: Record<RouteKey, readonly string[]> = {
   home: [],
+  caseStudy: ["bikecheck"],
 };
 
 /** The path a route occupies in a locale, as it appears in the built site. */

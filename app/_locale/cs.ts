@@ -15,12 +15,28 @@ export const cs: Dictionary = {
       description:
         "Jaroslav Lufinka vyvíjí software. Tento web do hloubky představuje BikeCheck, androidovou aplikaci postavenou na Capacitoru.",
     },
+    caseStudy: {
+      title: "BikeCheck — případová studie",
+      description:
+        "Jak vznikl BikeCheck: androidová aplikace pro servisní historii kola, od doménového modelu až po to, co jednotlivá rozhodnutí stála.",
+    },
   },
 
   home: {
     eyebrow: "Ve výstavbě",
     heading: "Jaroslav Lufinka",
     lede: "Tento web se právě staví. Představí BikeCheck — androidovou aplikaci postavenou na Capacitoru — jako případovou studii.",
+  },
+
+  selectedWork: {
+    heading: "Vybrané práce",
+    index: "01",
+    label: "Vybrané práce",
+    readCaseStudy: "Přečíst případovou studii",
+  },
+
+  proofLinks: {
     source: "Zdrojový kód na GitHubu",
+    googlePlay: "Stáhnout z Google Play",
   },
 };

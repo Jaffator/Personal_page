@@ -17,6 +17,11 @@ A route key is what the two versions of one page have in common. That is what th
 | `app/(en)/layout.tsx` | `/…` | `lang="en"` |
 | `app/(cs)/layout.tsx` | `/cs/…` | `lang="cs"` |
 
+A Case Study's path segment is the Project's slug, and it is the **same slug in
+both locales** (`/bikecheck`, `/cs/bikecheck`). That URL is pasted into job
+applications, so it stays stable and recognisable rather than becoming a second
+address for one page.
+
 Both hand off to `app/_shell/document.tsx`, so the head, the font preloads and the stylesheet are written once.
 
 `app/layout.tsx` sits above both and renders nothing but its children. It looks removable and is not: Next.js wraps `app/not-found.tsx` in the root layout, and with no root layout at all the framework supplies a bare `<html>` of its own — the site's 404 then renders a second `<html>` inside it, producing invalid markup with no language declared. The pass-through keeps one `<html>` per page, carrying that page's language.
@@ -25,7 +30,7 @@ The 404 is the one page written in English only. A static export serves a single
 
 ## Interface strings
 
-Two mechanisms with a firm boundary, per [ADR 0002](adr/0002-mdx-per-locale-for-case-studies.md): **interface strings** live in typed per-locale dictionaries under `app/_locale/`; **Case Study prose** lives in MDX per locale. Do not migrate one into the other.
+**Interface strings** live in typed per-locale dictionaries under `app/_locale/`. Structured content and Case Study prose do not — see [content.md](content.md) for the boundaries and [ADR 0002](adr/0002-mdx-per-locale-for-case-studies.md) for why. Do not migrate one into another.
 
 `app/_locale/en.ts` is the reference locale, and `Dictionary` is derived from it rather than declared separately. So a string added to English and forgotten in Czech stops `app/_locale/cs.ts` typechecking — and `next build` runs TypeScript, which makes it a failed build rather than an English string on a Czech page.
 

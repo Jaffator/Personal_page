@@ -47,6 +47,13 @@ passes accessibility, overflow and audit checks quite happily.
   one by more than colour, and lands on the equivalent page rather than the
   home page; and both versions declare each other with reciprocal `hreflang`.
   See [locale.md](locale.md).
+- **`tests/selected-work.spec.ts`** — Selected Work is a named landmark
+  listing at least one Project; every Project carries a title, a description,
+  stack tags and a link through to its Case Study in the same locale; the
+  source Proof Link is present and qualified by its note; and a Proof Link with
+  no value renders nothing — no Google Play link, no empty slot. Assertions are
+  per rendered Project rather than about BikeCheck, so a second Project is held
+  to the same bar without a line changing here. See [content.md](content.md).
 - **`tests/not-found.spec.ts`** — an unknown path answers 404 with the site's
   own page, not the framework's, and is scanned by axe in both themes. It sits
   outside `routes.ts` because it is the one page that must not return 200.

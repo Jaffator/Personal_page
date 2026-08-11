@@ -137,7 +137,14 @@ test.describe("the language switch", () => {
       }) => {
         await visitRoute(page, route.path);
         await switchLink(page, target).click();
-        await page.waitForURL(`**${equivalent.path}`);
+
+        // Matched as an exact pathname rather than as a glob. `**/bikecheck`
+        // also matches `/cs/bikecheck`, so on a nested route the wait would be
+        // satisfied by the page the switch was clicked on and the assertion
+        // below would read the URL before the navigation had happened.
+        await page.waitForURL(
+          (url) => new URL(url).pathname === equivalent.path,
+        );
 
         expect(
           new URL(page.url()).pathname,
