@@ -25,7 +25,7 @@ Rules and links get named utilities (`rule-t`, `rule-b`, `link`) because Tailwin
 
 ## The register
 
-Editorial: strong hierarchy, generous whitespace, hairline rules, one accent colour. The monospace is reserved for metadata — section indices, stack tags, dates — and never sets running prose.
+Editorial: strong hierarchy, generous whitespace, hairline rules, one accent colour. The monospace is reserved for metadata — section indices, stack tags, dates, and the language switch — and never sets running prose.
 
 ## Themes
 

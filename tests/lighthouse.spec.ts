@@ -24,11 +24,11 @@ function parseScores(stdout: string): Record<string, number> {
  * and load-sensitive, so this file is a project of its own (see
  * playwright.config.ts) and never runs alongside the browser tests.
  */
-for (const route of routes) {
-  test(`${route} meets the ${THRESHOLD} audit threshold`, async ({ baseURL }) => {
+for (const { path } of routes) {
+  test(`${path} meets the ${THRESHOLD} audit threshold`, async ({ baseURL }) => {
     test.setTimeout(180_000);
 
-    const url = new URL(route, baseURL).toString();
+    const url = new URL(path, baseURL).toString();
     const { stdout } = await execFileAsync(
       process.execPath,
       [RUNNER, url, CATEGORIES.join(",")],
@@ -39,6 +39,6 @@ for (const route of routes) {
     const summary = CATEGORIES.map((id) => `  ${id}: ${scores[id]}`).join("\n");
     const failed = CATEGORIES.filter((id) => scores[id] < THRESHOLD);
 
-    expect(failed, `${route} fell below ${THRESHOLD}:\n${summary}`).toEqual([]);
+    expect(failed, `${path} fell below ${THRESHOLD}:\n${summary}`).toEqual([]);
   });
 }

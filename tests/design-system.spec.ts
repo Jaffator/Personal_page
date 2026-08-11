@@ -238,7 +238,7 @@ test.describe("typography", () => {
 });
 
 test.describe("layout stability", () => {
-  for (const route of routes) {
+  for (const { path } of routes) {
     /**
      * Nothing on the page may move after it paints. `font-display: optional`
      * is what makes that hold for the fonts specifically — the browser either
@@ -246,7 +246,7 @@ test.describe("layout stability", () => {
      * page view — so this check will not catch a bad font swap so much as
      * catch the day someone removes `optional` and lets one back in.
      */
-    test(`${route} does not shift its layout after load`, async ({ page }) => {
+    test(`${path} does not shift its layout after load`, async ({ page }) => {
       await page.addInitScript(() => {
         (window as unknown as { __shift: number }).__shift = 0;
         new PerformanceObserver((list) => {
@@ -261,7 +261,7 @@ test.describe("layout stability", () => {
         }).observe({ type: "layout-shift", buffered: true });
       });
 
-      await visitRoute(page, route);
+      await visitRoute(page, path);
       await page.evaluate(() => document.fonts.ready);
       await page.waitForTimeout(500);
 
@@ -271,7 +271,7 @@ test.describe("layout stability", () => {
 
       expect(
         shift,
-        `${route} shifted its layout by ${shift} after load. Swapping a fallback for a webfont of different metrics is the usual cause.`,
+        `${path} shifted its layout by ${shift} after load. Swapping a fallback for a webfont of different metrics is the usual cause.`,
       ).toBe(0);
     });
   }

@@ -21,9 +21,9 @@ for (const colorScheme of ["light", "dark"] as const) {
   test.describe(`accessibility (${colorScheme})`, () => {
     test.use({ colorScheme });
 
-    for (const route of routes) {
-      test(`${route} has no accessibility violations`, async ({ page }) => {
-        await visitRoute(page, route);
+    for (const { path } of routes) {
+      test(`${path} has no accessibility violations`, async ({ page }) => {
+        await visitRoute(page, path);
 
         const { violations } = await new AxeBuilder({ page })
           .withTags(WCAG_TAGS)
@@ -32,7 +32,7 @@ for (const colorScheme of ["light", "dark"] as const) {
         expect(
           violations,
           violations.length
-            ? `axe reported ${violations.length} violation(s) on ${route} (${colorScheme}):\n${describeViolations(violations)}`
+            ? `axe reported ${violations.length} violation(s) on ${path} (${colorScheme}):\n${describeViolations(violations)}`
             : undefined,
         ).toEqual([]);
       });

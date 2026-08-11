@@ -9,7 +9,7 @@
 | `check:tokens`     | No raw colour, arbitrary value or inline style in component code — everything names a token. See [design-system.md](design-system.md). |
 | `build`            | A production build completes with no errors and no warnings, into `out/`. |
 | `validate:markup`  | Every built HTML file is valid markup.                                   |
-| `test`             | The built site passes accessibility, design-system, keyboard, viewport and audit checks. |
+| `test`             | The built site passes accessibility, design-system, keyboard, viewport, locale and audit checks, in every locale. |
 
 Any step failing fails the whole command, so it is safe to run before every
 commit. To wire it into git: `npm run hooks:install`.
@@ -41,6 +41,12 @@ passes accessibility, overflow and audit checks quite happily.
   `outline: none` with no replacement fails here.
 - **`tests/viewport.spec.ts`** — 360px wide viewport; fails if the document
   scrolls sideways, naming the offending elements.
+- **`tests/locale.spec.ts`** — each page declares its own language, its own
+  title and description, a canonical URL pointing at itself, and the language
+  it shares under; the language switch offers every locale, marks the active
+  one by more than colour, and lands on the equivalent page rather than the
+  home page; and both versions declare each other with reciprocal `hreflang`.
+  See [locale.md](locale.md).
 - **`tests/not-found.spec.ts`** — an unknown path answers 404 with the site's
   own page, not the framework's, and is scanned by axe in both themes. It sits
   outside `routes.ts` because it is the one page that must not return 200.
@@ -54,5 +60,12 @@ machine load, and a retry would mask a real regression.
 
 ## Adding a route
 
-Add its path to `tests/routes.ts`. Every check iterates that list, so one line
-brings a new route under the full bar.
+Add one entry per locale to `tests/routes.ts` — the same `key`, one `path`
+each. Every check iterates that list, so two lines bring a new route under the
+full bar in both languages, and the shared `key` is what the language-switch
+checks use to know where the switch should land.
+
+That inventory is written out by hand rather than imported from
+`app/_locale/routes.ts`, on purpose. The suite's value is that it asserts the
+built site from the outside; a suite that derived the Czech path from the same
+function the site uses would agree with a bug in that function.

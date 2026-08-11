@@ -67,10 +67,10 @@ function hasVisibleFocusIndicator(resting: FocusStyle, focused: FocusStyle): boo
   );
 }
 
-for (const route of routes) {
-  test(`${route} is fully keyboard operable`, async ({ page }) => {
+for (const { path } of routes) {
+  test(`${path} is fully keyboard operable`, async ({ page }) => {
     await page.addInitScript({ content: READ_FOCUS_STYLE_SCRIPT });
-    await visitRoute(page, route);
+    await visitRoute(page, path);
 
     // Index the interactive elements in DOM order so focus order can be
     // compared against it, and capture how each looks while unfocused.
@@ -86,7 +86,7 @@ for (const route of routes) {
 
     expect(
       resting.length,
-      `${route} has no interactive elements, so keyboard operability cannot be asserted. Either the page is broken or the selector needs updating.`,
+      `${path} has no interactive elements, so keyboard operability cannot be asserted. Either the page is broken or the selector needs updating.`,
     ).toBeGreaterThan(0);
 
     const stops: TabStop[] = [];
@@ -105,7 +105,7 @@ for (const route of routes) {
 
       expect(
         stop,
-        `Tab press ${step + 1} on ${route} landed outside the document, so ${resting.length - step} interactive element(s) are unreachable.`,
+        `Tab press ${step + 1} on ${path} landed outside the document, so ${resting.length - step} interactive element(s) are unreachable.`,
       ).not.toBeNull();
       stops.push(stop!);
     }
@@ -113,14 +113,14 @@ for (const route of routes) {
     // Tab order matches DOM order, and every element is visited exactly once.
     expect(
       stops.map((stop) => stop.index),
-      `Tab order on ${route} does not match DOM order.\nVisited:\n${stops.map((stop) => `  ${stop.index}: ${stop.label}`).join("\n")}`,
+      `Tab order on ${path} does not match DOM order.\nVisited:\n${stops.map((stop) => `  ${stop.index}: ${stop.label}`).join("\n")}`,
     ).toEqual(resting.map((_, index) => index));
 
     for (const stop of stops) {
       const restingStyle = resting[stop.index!].style;
       expect(
         hasVisibleFocusIndicator(restingStyle, stop.style),
-        `No visible focus indicator on ${route} for ${stop.label}\n  resting: ${JSON.stringify(restingStyle)}\n  focused: ${JSON.stringify(stop.style)}`,
+        `No visible focus indicator on ${path} for ${stop.label}\n  resting: ${JSON.stringify(restingStyle)}\n  focused: ${JSON.stringify(stop.style)}`,
       ).toBe(true);
     }
   });

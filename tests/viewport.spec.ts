@@ -7,11 +7,11 @@ const SMALL_PHONE = { width: 360, height: 740 };
 
 test.use({ viewport: SMALL_PHONE });
 
-for (const route of routes) {
-  test(`${route} does not overflow horizontally at ${SMALL_PHONE.width}px`, async ({
+for (const { path } of routes) {
+  test(`${path} does not overflow horizontally at ${SMALL_PHONE.width}px`, async ({
     page,
   }) => {
-    await visitRoute(page, route);
+    await visitRoute(page, path);
 
     const report = await page.evaluate(() => {
       const root = document.documentElement;
@@ -28,7 +28,7 @@ for (const route of routes) {
 
     expect(
       report.overflow,
-      `${route} scrolls sideways at ${SMALL_PHONE.width}px: content is ${report.overflow}px wider than the ${report.viewportWidth}px viewport.\n${report.offenders.join("\n")}`,
+      `${path} scrolls sideways at ${SMALL_PHONE.width}px: content is ${report.overflow}px wider than the ${report.viewportWidth}px viewport.\n${report.offenders.join("\n")}`,
     ).toBeLessThanOrEqual(0);
   });
 }

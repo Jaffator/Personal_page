@@ -21,6 +21,14 @@ test("an unknown path serves the site's own not-found page", async ({ page }) =>
   ).toBe(404);
 
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Page not found");
+
+  // This page sits above both locale trees and so inherits neither document.
+  // `app/layout.tsx` is what keeps it inside one — remove it and the framework
+  // supplies a bare shell with no language at all. See docs/locale.md.
+  await expect(
+    page.locator("html"),
+    "The not-found page declares no language, so it is not being rendered inside the site's own document.",
+  ).toHaveAttribute("lang", "en");
 });
 
 for (const colorScheme of ["light", "dark"] as const) {
