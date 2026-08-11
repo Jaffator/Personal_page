@@ -4,11 +4,12 @@
 
 | Step               | What it proves                                                          |
 | ------------------ | ----------------------------------------------------------------------- |
-| `typecheck`        | No type errors in the site or the tests (`.ts`/`.tsx`; the two harness scripts are plain `.mjs` and are not typechecked). |
+| `typecheck`        | No type errors in the site or the tests (`.ts`/`.tsx`; everything under `scripts/` is plain `.mjs` and is not typechecked). |
 | `lint`             | No ESLint errors **or warnings** (`--max-warnings 0`).                   |
+| `check:tokens`     | No raw colour, arbitrary value or inline style in component code — everything names a token. See [design-system.md](design-system.md). |
 | `build`            | A production build completes with no errors and no warnings, into `out/`. |
 | `validate:markup`  | Every built HTML file is valid markup.                                   |
-| `test`             | The built site passes accessibility, keyboard, viewport and audit checks. |
+| `test`             | The built site passes accessibility, design-system, keyboard, viewport and audit checks. |
 
 Any step failing fails the whole command, so it is safe to run before every
 commit. To wire it into git: `npm run hooks:install`.
@@ -29,6 +30,11 @@ passes accessibility, overflow and audit checks quite happily.
 
 - **`tests/accessibility.spec.ts`** — axe-core against WCAG 2.1 A and AA, in
   both light and dark colour schemes. Any violation fails.
+- **`tests/design-system.spec.ts`** — reads what the browser actually resolved:
+  both themes carry the same token names and differ only in colour, the theme
+  follows the system preference with no script deciding it, no request leaves
+  the origin, both self-hosted faces finish loading, and the page records zero
+  layout shift while they do.
 - **`tests/keyboard.spec.ts`** — indexes every interactive element in DOM
   order, tabs through the page, and asserts focus visits each one exactly once
   in that order with a computed style that visibly changes on focus. An
@@ -36,8 +42,8 @@ passes accessibility, overflow and audit checks quite happily.
 - **`tests/viewport.spec.ts`** — 360px wide viewport; fails if the document
   scrolls sideways, naming the offending elements.
 - **`tests/not-found.spec.ts`** — an unknown path answers 404 with the site's
-  own page, not the framework's. It sits outside `routes.ts` because it is the
-  one page that must not return 200.
+  own page, not the framework's, and is scanned by axe in both themes. It sits
+  outside `routes.ts` because it is the one page that must not return 200.
 - **`tests/lighthouse.spec.ts`** — performance, accessibility, best-practices
   and SEO must each score 95 or above. The audit itself runs in
   `scripts/lighthouse-run.mjs`, a plain Node process, because Lighthouse's

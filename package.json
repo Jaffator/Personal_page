@@ -7,10 +7,11 @@
     "build": "node scripts/build.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "eslint --max-warnings 0",
+    "check:tokens": "node scripts/check-tokens.mjs",
     "validate:markup": "html-validate \"out/**/*.html\"",
     "serve:built": "serve out --listen 4321 --no-clipboard --no-port-switching",
     "test": "playwright test",
-    "verify": "npm run typecheck && npm run lint && npm run build && npm run validate:markup && npm run test",
+    "verify": "npm run typecheck && npm run lint && npm run check:tokens && npm run build && npm run validate:markup && npm run test",
     "hooks:install": "git config core.hooksPath .githooks"
   },
   "dependencies": {

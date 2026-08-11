@@ -1,1 +1,206 @@
 @import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+ * Typefaces
+ *
+ * Self-hosted so the built site makes no third-party request. Latin and
+ * latin-ext are separate files split by unicode-range: the Czech locale needs
+ * č, ř, š, ž, ě and ů, and paying for that subset on the English pages would
+ * be waste.
+ *
+ * `font-display: optional` together with the preloads in app/layout.tsx is
+ * what keeps the page from shifting. The file is same-origin and small, so it
+ * is in hand before the first paint in the normal case; on a connection too
+ * slow for that the browser keeps the fallback for the whole page view rather
+ * than swapping under the Reader's eyes.
+ * ------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: optional;
+  src: url("/fonts/inter-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: optional;
+  src: url("/fonts/inter-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7,
+    U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF,
+    U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: optional;
+  src: url("/fonts/jetbrains-mono-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: optional;
+  src: url("/fonts/jetbrains-mono-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7,
+    U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF,
+    U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* ---------------------------------------------------------------------------
+ * Tokens
+ *
+ * The only place in the codebase where a colour, a size or a rule weight is
+ * written down. Component code names tokens and never values; scripts/
+ * check-tokens.mjs fails the build if it does otherwise.
+ * ------------------------------------------------------------------------- */
+
+@theme {
+  /* Tailwind's own palette, type scale, containers and font stacks are cleared
+     first. Left in place they are a parallel, themeless set of values one
+     `text-gray-500` away from being used — and unlike a raw hex, `text-4xl`
+     looks like it belongs. What remains below is the whole vocabulary. */
+  --color-*: initial;
+  --text-*: initial;
+  --container-*: initial;
+  --font-*: initial;
+
+  /* Colour — light values. The dark theme below re-resolves these same names;
+     it never introduces one of its own. */
+  --color-page: #ffffff;
+  --color-ink: #131313;
+  --color-muted: #5c5c5c;
+  --color-rule: #e3e3e0;
+  --color-accent: #b03a1a;
+  --color-focus: #b03a1a;
+
+  /* Type. One grotesk for everything a Reader reads, one monospace for the
+     metadata around it — indices, stack tags, dates. Never running prose. */
+  --font-sans: "Inter", ui-sans-serif, system-ui, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas,
+    monospace;
+
+  /* Type scale. Editorial: a long quiet middle, then a jump for the display
+     sizes so hierarchy reads at a glance rather than by degrees. */
+  --text-meta: 0.75rem;
+  --text-meta--line-height: 1.4;
+  --text-meta--letter-spacing: 0.08em;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.6;
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.7;
+  --text-lede: 1.25rem;
+  --text-lede--line-height: 1.6;
+  --text-title: 1.5rem;
+  --text-title--line-height: 1.35;
+  --text-section: 2rem;
+  --text-section--line-height: 1.2;
+  --text-display: clamp(2.5rem, 7vw, 4rem);
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.03em;
+
+  /* Spacing. Every gap on the site is a multiple of this step. */
+  --spacing: 0.25rem;
+
+  /* Measure — the width prose is allowed to reach before it stops being
+     readable, and the wider frame the page sits in. */
+  --container-measure: 34rem;
+  --container-page: 46rem;
+
+  /* Rules. Hairlines, not borders: they separate without drawing attention. */
+  --rule-hairline: 1px;
+
+  /* Links carry the one accent colour, underlined at a distance that clears
+     the descenders. */
+  --underline-offset: 0.22em;
+
+  /* Focus. One treatment for every interactive element on the site. */
+  --focus-width: 2px;
+  --focus-offset: 3px;
+}
+
+/* The dark theme is the same token names resolved to different values. Nothing
+   but colour changes: the type scale, spacing and rule weights are one set of
+   decisions, not two. Resolved by the browser from the system preference, with
+   no script involved, so the first paint is already the right theme. */
+@layer base {
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-page: #0c0c0e;
+      --color-ink: #ededea;
+      --color-muted: #9c9c9f;
+      --color-rule: #232326;
+      --color-accent: #ff9166;
+      --color-focus: #ff9166;
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Base
+ * ------------------------------------------------------------------------- */
+
+@layer base {
+  :root {
+    /* Tells the browser both themes exist, so scrollbars, form controls and
+       the canvas behind the body follow along. */
+    color-scheme: light dark;
+  }
+
+  body {
+    background-color: var(--color-page);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: var(--focus-offset);
+    border-radius: 1px;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-page);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Utilities
+ *
+ * Rules and links are the two pieces of the register Tailwind has no token
+ * namespace for. Named utilities keep them out of component code, which would
+ * otherwise repeat a border width, an underline thickness and an offset at
+ * every call site — three raw numbers the token layer already owns.
+ * ------------------------------------------------------------------------- */
+
+@utility rule-t {
+  border-top: var(--rule-hairline) solid var(--color-rule);
+}
+
+@utility rule-b {
+  border-bottom: var(--rule-hairline) solid var(--color-rule);
+}
+
+@utility link {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-decoration-thickness: var(--rule-hairline);
+  text-underline-offset: var(--underline-offset);
+}

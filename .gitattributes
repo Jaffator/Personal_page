@@ -2,3 +2,7 @@
 
 # Git hooks are executed by sh and must not carry CRLF line endings.
 .githooks/* text eol=lf
+
+# Self-hosted fonts. `text=auto` guesses correctly, but a mangled font file is
+# an expensive thing to debug, so say it outright.
+*.woff2 binary
