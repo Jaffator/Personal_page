@@ -9,6 +9,10 @@ export const cs: Dictionary = {
     label: "Jazyk",
   },
 
+  siteLink: {
+    label: "Domů — Jaroslav Lufinka",
+  },
+
   meta: {
     home: {
       title: "Jaroslav Lufinka",
@@ -40,6 +44,7 @@ export const cs: Dictionary = {
   caseStudy: {
     eyebrow: "Případová studie",
     walkthrough: "Podívejte se, jak běží",
+    walkthroughCaptions: "Titulky",
     architecture: "Jak je to postavené",
     featureTour: "Co to umí",
     deepDives: "Těžké části",

@@ -1,7 +1,9 @@
 import { bikecheckCaseStudy } from "@/app/_case-study/bikecheck";
 import { CaseStudyLayout } from "@/app/_case-study/layout";
 import { DeepDive } from "@/app/_case-study/deep-dive";
+import { WalkthroughPlayer } from "@/app/_case-study/walkthrough-player";
 import { projects } from "@/app/_content/projects";
+import { bikecheckWalkthrough } from "@/app/_content/walkthrough";
 import { dictionaries } from "@/app/_locale/dictionaries";
 import type { Locale, RouteKey } from "@/app/_locale/routes";
 import { SiteHeader } from "@/app/_shell/site-header";
@@ -57,9 +59,12 @@ export function CaseStudyView({ locale }: { locale: Locale }) {
             />
           )),
 
-          // The player is ticket 08. Until then the slot renders nothing at
-          // all rather than a placeholder promising a video that does not
-          // exist.
+          // The recording itself is still a placeholder — ticket 13 — but the
+          // player is real, and swapping the files under it needs no change
+          // here. See app/_content/walkthrough.ts.
+          walkthrough: (
+            <WalkthroughPlayer locale={locale} walkthrough={bikecheckWalkthrough} />
+          ),
         }}
       />
     </>

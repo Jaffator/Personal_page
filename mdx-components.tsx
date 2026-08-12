@@ -26,7 +26,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
      * outbound link should not hand the destination a referrer it can use.
      */
     a: ({ href, children }) => (
-      <a className="link" href={href} rel="noreferrer">
+      <a className="link link-sweep" href={href} rel="noreferrer">
         {children}
       </a>
     ),

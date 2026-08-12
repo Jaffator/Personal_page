@@ -83,11 +83,18 @@ passes accessibility, overflow and audit checks quite happily.
 - **`tests/case-study.spec.ts`** — the Case Study renders at its own URL in both
   locales and composes its parts in order; the Deep Dive repeats three times as
   one unit, each making all four moves under the same labels; a captioned figure
-  sits inside a Deep Dive with its caption attached by `figcaption`; the
-  Walkthrough slot renders nothing at all while empty; the heading outline skips
-  no level; and the two locales are not the same text. Assertions are by
-  structure rather than by wording, so ticket 14 can rewrite every word without
-  touching this file. See [content.md](content.md).
+  sits inside a Deep Dive with its caption attached by `figcaption`; the heading
+  outline skips no level; and the two locales are not the same text. Assertions
+  are by structure rather than by wording, so ticket 14 can rewrite every word
+  without touching this file.
+
+  The Walkthrough is the exception, and is asserted behaviourally: the player
+  sits in its slot above the architecture, never autoplays but does play when
+  asked, shows a poster that is actually served, fetches no video bytes until
+  the Reader asks for them, is not the largest contentful paint element, and
+  carries its silent content twice — a served WebVTT track and a description
+  beside the player. These survive ticket 13 swapping the placeholder recording
+  for the real one. See [content.md](content.md).
 - **`tests/social-preview.spec.ts`** — every route declares a social preview
   image at an absolute URL, states its width and height, and asks to be
   rendered as a large card rather than a thumbnail; the declared URL is fetched
@@ -96,6 +103,17 @@ passes accessibility, overflow and audit checks quite happily.
   title rather than reusing the English one. It reads the tags and follows the
   URL exactly as a crawler would, so it knows nothing about how the image was
   produced. See [social-preview.md](social-preview.md).
+- **`tests/motion.spec.ts`** — the motion layer, asserted by consequence rather
+  than by mechanism: nothing below names an animation or a class, so a later
+  ticket can retune every duration and this file still says whether the result
+  is acceptable. With a reduced-motion preference set, every route shows all of
+  its content and runs no perceptible animation; with motion enabled, every
+  route still ends up showing all of its content once scrolled — a reveal that
+  never fires is caught from the other side. No animation may fade text, no
+  animation may touch a property that cannot be composited, the page records
+  zero layout shift while it is scrolled, and the built site ships no animation
+  runtime. See [design-system.md](design-system.md) and
+  [ADR 0005](adr/0005-css-scroll-driven-motion-without-a-library.md).
 - **`tests/not-found.spec.ts`** — an unknown path answers 404 with the site's
   own page, not the framework's, and is scanned by axe in both themes. It sits
   outside `routes.ts` because it is the one page that must not return 200.

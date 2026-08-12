@@ -20,7 +20,7 @@ export function SectionHeading({
   children: string;
 }) {
   return (
-    <div className="rule-t flex items-baseline gap-4 pt-4">
+    <div className="reveal rule-draw rule-t flex items-baseline gap-4 pt-4">
       <span aria-hidden="true" className="font-mono text-meta text-muted">
         {index}
       </span>

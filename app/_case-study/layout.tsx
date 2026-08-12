@@ -91,7 +91,7 @@ export function CaseStudyLayout({
       <WalkthroughSlot heading={strings.walkthrough}>{parts.walkthrough}</WalkthroughSlot>
 
       {sections.map((section) => (
-        <section key={section.id} aria-labelledby={section.id} className="mt-24">
+        <section key={section.id} aria-labelledby={section.id} className="reveal mt-24">
           <h2 id={section.id} className="text-section font-semibold text-ink">
             {section.heading}
           </h2>
@@ -99,7 +99,7 @@ export function CaseStudyLayout({
         </section>
       ))}
 
-      <section aria-labelledby="deep-dives" className="mt-24">
+      <section aria-labelledby="deep-dives" className="reveal mt-24">
         <h2 id="deep-dives" className="text-section font-semibold text-ink">
           {strings.deepDives}
         </h2>
@@ -110,7 +110,7 @@ export function CaseStudyLayout({
         <div className="mt-8 flex flex-col gap-16">{parts.deepDives}</div>
       </section>
 
-      <section aria-labelledby="retrospective" className="mt-24">
+      <section aria-labelledby="retrospective" className="reveal mt-24">
         <h2 id="retrospective" className="text-section font-semibold text-ink">
           {strings.retrospective}
         </h2>

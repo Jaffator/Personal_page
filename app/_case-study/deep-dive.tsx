@@ -70,7 +70,7 @@ export function DeepDive({
   ];
 
   return (
-    <section id={id} aria-labelledby={titleId} className="rule-t pt-6">
+    <section id={id} aria-labelledby={titleId} className="reveal rule-draw rule-t pt-6">
       <p aria-hidden="true" className="font-mono text-meta text-muted uppercase">
         {index}
       </p>

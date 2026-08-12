@@ -30,21 +30,31 @@ export function Hero({ project, locale }: { project: Project; locale: Locale }) 
 
   return (
     <section aria-labelledby={headingId}>
-      <p className="font-mono text-meta text-muted uppercase">{strings.eyebrow}</p>
+      {/* The hero is the one part of the page already in view when it loads, so
+          it is the one part whose motion is a load sequence rather than a
+          scroll reveal — `settle-*` orders it, and the order is the order of
+          the argument: what this is, who, the claim, the stack, the proof. The
+          elements are fully visible without it; see the motion section of
+          globals.css. */}
+      <p className="settle settle-1 font-mono text-meta text-muted uppercase">
+        {strings.eyebrow}
+      </p>
 
-      <h1 id={headingId} className="mt-6 text-display font-semibold text-ink">
+      <h1 id={headingId} className="settle settle-2 mt-6 text-display font-semibold text-ink">
         {strings.name}
       </h1>
 
       {/* The positioning, at the largest size a Reader reads rather than scans.
           It is what the rest of the page is graded against, so it sits directly
           under the name with nothing between them. */}
-      <p className="mt-8 max-w-measure text-lede text-ink">{strings.positioning}</p>
+      <p className="settle settle-3 mt-8 max-w-measure text-lede text-ink">
+        {strings.positioning}
+      </p>
 
       {/* The Project the claim rests on. Its name and description come from
           content, not from the dictionary, so the hero and Selected Work
           cannot drift into two different accounts of one application. */}
-      <p className="mt-6 max-w-measure text-body text-muted">
+      <p className="settle settle-4 mt-6 max-w-measure text-body text-muted">
         {strings.projectLead}{" "}
         <strong className="font-semibold text-ink">{project.title}</strong> —{" "}
         {project.description[locale]}
@@ -53,7 +63,7 @@ export function Hero({ project, locale }: { project: Project; locale: Locale }) 
       {/* The stack, in the monospace register the design system reserves for
           metadata. A list, so a screen reader announces how many technologies
           there are before reading them. */}
-      <ul className="mt-8 flex flex-wrap gap-x-4 gap-y-2 font-mono text-meta text-muted uppercase">
+      <ul className="settle settle-5 mt-8 flex flex-wrap gap-x-4 gap-y-2 font-mono text-meta text-muted uppercase">
         {project.stack.map((technology) => (
           <li key={technology}>{technology}</li>
         ))}
@@ -62,7 +72,7 @@ export function Hero({ project, locale }: { project: Project; locale: Locale }) 
       {/* Proof, one step below the claim it supports: `text-small` against a
           display heading, so it is reachable without competing with the
           statement it exists to back up. */}
-      <ProofLinks project={project} locale={locale} spacing="mt-8" />
+      <ProofLinks project={project} locale={locale} spacing="settle settle-5 mt-8" />
     </section>
   );
 }

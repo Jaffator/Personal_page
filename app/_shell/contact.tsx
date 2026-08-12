@@ -45,7 +45,7 @@ export function Contact({ locale }: { locale: Locale }) {
       <div className="mt-8">
         <p className="font-mono text-meta text-muted uppercase">{strings.emailLabel}</p>
         <div className="mt-2 flex flex-wrap items-baseline gap-x-6 gap-y-2">
-          <a className="link text-lede" href={`mailto:${EMAIL}`}>
+          <a className="link link-sweep text-lede" href={`mailto:${EMAIL}`}>
             {EMAIL}
           </a>
           <CopyEmail locale={locale} />
@@ -66,13 +66,13 @@ export function Contact({ locale }: { locale: Locale }) {
       <ul className="mt-10 flex flex-wrap gap-x-8 gap-y-3 text-small">
         {profiles.map((profile) => (
           <li key={profile.key}>
-            <a className="link" href={profile.href} rel="noreferrer">
+            <a className="link link-sweep" href={profile.href} rel="noreferrer">
               {strings.profiles[profile.key]}
             </a>
           </li>
         ))}
         <li>
-          <a className="link" href={CV.href} download={CV.download}>
+          <a className="link link-sweep" href={CV.href} download={CV.download}>
             {strings.cv}
           </a>
         </li>

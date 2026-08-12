@@ -5,7 +5,7 @@ Three mechanisms carry text on this site, with firm boundaries between them:
 | Mechanism | Lives in | Holds |
 | --------- | -------- | ----- |
 | **Interface strings** | `app/_locale/en.ts`, `app/_locale/cs.ts` | Labels, headings, link text — the furniture around content, plus the About prose |
-| **Structured content** | `app/_content/` | Projects, their stack, their Proof Links; the author's Stack groups and contact details |
+| **Structured content** | `app/_content/` | Projects, their stack, their Proof Links; the Walkthrough recording; the author's Stack groups and contact details |
 | **Case Study prose** | `app/_case-study/<slug>/<locale>/*.mdx` | Long-form writing, per [ADR 0002](adr/0002-mdx-per-locale-for-case-studies.md) |
 
 Do not migrate one into the other. The test for which a piece of text is: if it
@@ -178,13 +178,14 @@ prevent.
 
 ```
 app/_case-study/
-  layout.tsx            the parts, in the order every Case Study makes its argument
-  deep-dive.tsx         one hard problem: constraint, options, choice, cost
-  figure.tsx            a figure with its caption attached
-  walkthrough-slot.tsx  where the player lands (ticket 08); empty renders nothing
-  documents.ts          the types that make a missing document a failed build
-  bikecheck.ts          which document fills which part, per locale
-  bikecheck/{en,cs}/    the prose itself
+  layout.tsx              the parts, in the order every Case Study makes its argument
+  deep-dive.tsx           one hard problem: constraint, options, choice, cost
+  figure.tsx              a figure with its caption attached
+  walkthrough-slot.tsx    where the player lands; an absent Walkthrough renders nothing
+  walkthrough-player.tsx  the player itself
+  documents.ts            the types that make a missing document a failed build
+  bikecheck.ts            which document fills which part, per locale
+  bikecheck/{en,cs}/      the prose itself
 ```
 
 ### Headings belong to the layout, not the prose
@@ -201,6 +202,56 @@ Paragraphs, emphasis, links, lists, preformatted blocks, and `<Figure
 caption="…">` — available without an import, so a captioned figure can sit
 beside the paragraph that refers to it. `figure`/`figcaption` is what associates
 a caption with its figure; positioning it underneath is not.
+
+### The Walkthrough
+
+The Walkthrough is the site's proof. With no live demo and no store listing, the
+recording is the only evidence a Reader has that BikeCheck runs — so the player
+has to work perfectly and cost nothing.
+
+The recording is described in `app/_content/walkthrough.ts`: the video, the
+poster, a caption track per locale, the frame's dimensions, and a prose
+description of what it shows. It is content by the test above — every field
+describes one Project's recording — and it is a module of its own because a
+Case Study can exist before its recording does.
+
+The video itself is **not** localised. It is silent (see CONTEXT.md), so one
+file serves both languages; only the captions and the description differ.
+
+`app/_case-study/walkthrough-player.tsx` renders a plain `<video controls>`.
+That is the design, not a shortcut. A native player is already keyboard
+operable, already labelled, and already offers fullscreen and playback rate —
+all of which a custom player would have to rebuild, and `tests/keyboard.spec.ts`
+would hold the rebuild to the same bar the native element clears for free. It is
+also the only way to have a player at all without a client component: there are
+none in `app/`, for the reason `copy-email.tsx` documents.
+
+Four things hold the performance line, each asserted in `tests/case-study.spec.ts`:
+
+- **`preload="none"`** — no video bytes are fetched until the Reader presses
+  play. The recording is the largest file on the site and most Readers will
+  never play it.
+- **A poster** — so the player is not a black rectangle at rest, and the space
+  is filled by an image measured in kilobytes.
+- **It is never the largest contentful paint element.** The test reads the real
+  LCP entry rather than reasoning about it; a large portrait poster near the top
+  of a page is exactly the shape of thing that becomes LCP by accident.
+- **It never autoplays** — no attribute, and no script that could call `play()`.
+  Muted autoplay would still spend a Reader's bandwidth and move a page they are
+  reading.
+
+Because the recording carries no audio, its content is given twice: a WebVTT
+caption track, and a description in a `figcaption` attached to the player, for
+the Reader who will not play a video at all.
+
+> **The committed recording is a placeholder and must be replaced before deploy.**
+> `scripts/build-walkthrough-placeholder.mjs` writes a holding frame that
+> genuinely plays, so the player, its poster, its captions and its byte budget
+> are real and under test from the day the component ships. The real recording is
+> ticket 13 and gates launch. Replacing it is a **file swap**: overwrite the four
+> files in `public/walkthrough/`, keeping the names, and update `width`/`height`
+> and `description` in `app/_content/walkthrough.ts` if the frame or the content
+> differs. No component changes, and the generator script can then be deleted.
 
 ### A missing document fails the build
 

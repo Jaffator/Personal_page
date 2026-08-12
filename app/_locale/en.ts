@@ -18,6 +18,19 @@ export const en = {
     label: "Language",
   },
 
+  siteLink: {
+    /**
+     * The wordmark's accessible name.
+     *
+     * It says where the link goes rather than what it shows: the visible mark
+     * is a monogram and a name, which to a Reader listing the page's links
+     * reads as an author rather than as a destination. The name is still in it
+     * because that list is how a screen-reader Reader identifies whose site
+     * this is.
+     */
+    label: "Home — Jaroslav Lufinka",
+  },
+
   /**
    * One title and description per route. Keyed by `RouteKey`, so adding a
    * route forces both to be written in every locale before the build passes.
@@ -83,8 +96,15 @@ export const en = {
    */
   caseStudy: {
     eyebrow: "Case Study",
-    /** Titles the Walkthrough once ticket 08 lands. Unused while the slot is empty. */
+    /** Titles the Walkthrough, and names its player for a screen reader. */
     walkthrough: "Watch it run",
+    /**
+     * Names the caption track in the player's own captions menu. The recording
+     * is silent, so this is the track carrying its content rather than a
+     * transcription of speech — but "captions" is what the control is called
+     * and renaming it would only make it harder to find.
+     */
+    walkthroughCaptions: "Captions",
     architecture: "How it is built",
     featureTour: "What it does",
     deepDives: "The hard parts",

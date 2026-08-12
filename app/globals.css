@@ -120,6 +120,12 @@
   --container-measure: 34rem;
   --container-page: 46rem;
 
+  /* How tall the Walkthrough player is allowed to get. The recording is a
+     portrait phone screen, so left to fill the measure it would stand taller
+     than the viewport and push the rest of the Case Study out of sight. This is
+     the height at which it still reads as a phone and the section still fits. */
+  --walkthrough-height: 34rem;
+
   /* Rules. Hairlines, not borders: they separate without drawing attention. */
   --rule-hairline: 1px;
 
@@ -130,6 +136,33 @@
   /* Focus. One treatment for every interactive element on the site. */
   --focus-width: 2px;
   --focus-offset: 3px;
+
+  /* Motion.
+   *
+   * Three durations, not a scale: what a Reader notices is the difference
+   * between a state change and a passage, and two steps plus a slow one for
+   * the reveal is the whole of that distinction. `--motion-quick` is for a
+   * state answering a pointer, `--motion-settle` for something arriving.
+   *
+   * The easing is a single curve with no overshoot. A spring or a back-ease
+   * draws attention to the animation itself, which is the opposite of what a
+   * restrained layer is for — motion here should be noticed only in its
+   * absence.
+   *
+   * `--motion-rise` is how far a revealing element travels. It is small on
+   * purpose: enough to read as arriving from somewhere, not far enough to
+   * look like the page is assembling itself. It is a transform, never a
+   * layout property, so no amount of it can shift the page.
+   *
+   * `--motion-stagger` is the gap between one hero element settling and the
+   * next. Multiplied by an index, so the sequence is one decision here rather
+   * than five delays written down the component. */
+  --motion-quick: 160ms;
+  --motion-settle: 320ms;
+  --motion-reveal: 600ms;
+  --motion-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --motion-rise: 0.75rem;
+  --motion-stagger: 70ms;
 }
 
 /* The dark theme is the same token names resolved to different values. Nothing
@@ -203,4 +236,259 @@
   text-decoration: underline;
   text-decoration-thickness: var(--rule-hairline);
   text-underline-offset: var(--underline-offset);
+}
+
+/* The Walkthrough player's frame. It is a utility rather than three classes on
+   the element because the height cap, the aspect-preserving width and the
+   hairline around it are one decision — how a portrait recording sits in a
+   page of prose — and splitting them puts a raw height back in a component. */
+@utility walkthrough {
+  display: block;
+  max-height: var(--walkthrough-height);
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  border: var(--rule-hairline) solid var(--color-rule);
+  background-color: var(--color-rule);
+}
+
+/* ---------------------------------------------------------------------------
+ * Motion
+ *
+ * The detail layer. It is restrained on purpose: heavy or janky motion reads
+ * worse than none at all, undercuts the editorial register, and is the easiest
+ * way to make a fast page feel slow.
+ *
+ * ## The rule everything here obeys
+ *
+ * **Motion never makes content visible.** Every element below is fully visible
+ * with no animation running. Nothing here animates opacity at all: the reveal
+ * moves an element that is already opaque, and its resting state is the
+ * default the element already has. Suppressing the animation therefore leaves
+ * the finished page, not an empty one — and text is legible in every frame
+ * while it plays.
+ *
+ * That is not a stylistic preference. The usual scroll-reveal sets
+ * `opacity: 0` in the resting style and relies on the animation to undo it,
+ * which under a reduced-motion preference hides the content permanently from
+ * the Readers who asked for less movement. `tests/motion.spec.ts` asserts the
+ * outcome on every route, in both directions: nothing hidden with the
+ * preference set, and nothing left hidden with it unset.
+ *
+ * ## What drives the reveal
+ *
+ * `animation-timeline: view()` — a scroll-driven animation resolved by the
+ * browser, with no observer, no script and no hydration. The site ships no
+ * framework runtime and this layer does not change that.
+ *
+ * It is progressive by construction. A browser without scroll-driven
+ * animations ignores `animation-timeline`, and would ordinarily be left with
+ * the animation running once on load; `@supports` confines the whole rule to
+ * browsers that have the timeline, so everywhere else simply gets the resting
+ * page. That is a fine outcome — the reveal is a grace note, not the content.
+ *
+ * ## What may be animated
+ *
+ * `transform` and `opacity` only. Both are composited, so a frame costs no
+ * layout and no paint, and neither can move anything else on the page — which
+ * is what keeps the layout-shift score at zero while a Reader scrolls.
+ * ------------------------------------------------------------------------- */
+
+@layer base {
+  /* The reveal.
+   *
+   * `animation-range` ends at `cover 30%`, so an element finishes arriving
+   * shortly after its top edge enters the viewport rather than tracking the
+   * scroll the whole way up the screen. Motion tied to the full range reads as
+   * the page being dragged into place, and leaves text mid-fade while it is
+   * being read. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .reveal {
+        animation: reveal-rise var(--motion-reveal) var(--motion-ease) both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 30%;
+      }
+    }
+  }
+
+  /* Movement only — the reveal does not touch opacity.
+   *
+   * The obvious reveal fades as it rises, and that is what was written here
+   * first. It does not survive contact with the requirement that text be
+   * readable: any opacity below 1 lowers the contrast of the text against the
+   * page, `text-muted` has little headroom over the AA threshold to give away,
+   * and so mid-animation the site is failing the contrast bar for exactly as
+   * long as the animation runs. Lowering the fade to a floor of 0.55 was not
+   * enough, because the problem is the fade rather than its depth.
+   *
+   * What is left is better motion anyway. A short rise reads as the section
+   * arriving, and the text is at full strength the entire way — legible in the
+   * first frame, for the Reader whose eye is already on that line rather than
+   * on the movement. The site's own accessibility scan is what holds this:
+   * `tests/accessibility.spec.ts` runs axe while the animation is still going.
+   *
+   * There is deliberately no opacity token here. There is no fade to tune. */
+  @keyframes reveal-rise {
+    from {
+      transform: translateY(var(--motion-rise));
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  /* Signature moment 1 — the hero settles in sequence on load.
+   *
+   * The one piece of motion that is not scroll-driven, because the hero is
+   * already in view when the page arrives: it plays once, on load, and the
+   * order of the sequence is the order of the argument the hero makes. The
+   * delay is `--motion-stagger` multiplied by a per-element index the
+   * component sets, so the sequence is declared here rather than as five
+   * separate delays written down the markup.
+   *
+   * `both` holds the opening frame during the delay, so an element later in
+   * the sequence does not flash in before its turn. */
+  @media (prefers-reduced-motion: no-preference) {
+    .settle {
+      animation: reveal-rise var(--motion-settle) var(--motion-ease) both;
+      animation-delay: calc(var(--settle-index, 0) * var(--motion-stagger));
+    }
+  }
+
+  /* The hero's sequence positions, as named classes.
+   *
+   * The index has to reach the element somehow, and the two obvious routes are
+   * both closed: an inline style puts a value back in component code, and an
+   * arbitrary Tailwind value does the same in a different syntax —
+   * `check:tokens` rejects both. So the positions are enumerated here, which
+   * also caps the sequence at a length that still reads as one gesture. A
+   * sixth element in the hero is a prompt to ask whether it should be
+   * animating at all, not to add `.settle-6`. */
+  .settle-1 {
+    --settle-index: 1;
+  }
+  .settle-2 {
+    --settle-index: 2;
+  }
+  .settle-3 {
+    --settle-index: 3;
+  }
+  .settle-4 {
+    --settle-index: 4;
+  }
+  .settle-5 {
+    --settle-index: 5;
+  }
+
+  /* Signature moment 2 — a section's hairline draws itself as it arrives.
+   *
+   * The rules are the strongest piece of the editorial register, so they are
+   * what gets the deliberate moment. The line scales from nothing to its full
+   * width from the left, on the same view timeline as the reveal.
+   *
+   * It animates a pseudo-element rather than the border it replaces: a border
+   * cannot be scaled without scaling its element, and `transform` on a
+   * hairline is the only way to draw one without touching layout. The element
+   * carries its own `rule-t` border underneath regardless, so a browser
+   * without the timeline — or a Reader with the preference set — sees an
+   * ordinary, complete hairline. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .rule-draw {
+        position: relative;
+      }
+
+      .rule-draw::before {
+        content: "";
+        position: absolute;
+        top: calc(var(--rule-hairline) * -1);
+        left: 0;
+        width: 100%;
+        height: var(--rule-hairline);
+        background-color: var(--color-accent);
+        transform-origin: left center;
+        animation: rule-draw var(--motion-reveal) var(--motion-ease) both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 25%;
+      }
+    }
+  }
+
+  @keyframes rule-draw {
+    from {
+      transform: scaleX(0);
+      opacity: 1;
+    }
+    to {
+      transform: scaleX(1);
+      opacity: 0;
+    }
+  }
+}
+
+/* Signature moment 3 — a link's underline sweeps in from the left.
+ *
+ * The site's links are underlined at rest, so the hover state cannot be "an
+ * underline appears". Instead the resting underline is the quiet one and a
+ * second, accent-weight line sweeps across beneath it — the same gesture as
+ * the rule draw, at the scale of a single link, which is what makes the two
+ * read as one idea rather than two effects.
+ *
+ * It is `background-size` on a gradient rather than a transformed
+ * pseudo-element because a link wraps across lines, and a pseudo-element on a
+ * wrapped inline box draws one rectangle around the whole run instead of
+ * following each line. This follows the text.
+ *
+ * `background-size` is not a composited property, but it is a hover state on
+ * one small element rather than something that runs while the page scrolls,
+ * and it cannot shift layout. The scroll-driven work stays on transform and
+ * opacity, which is what the performance budget is actually about.
+ *
+ * Applied on focus as well as hover, so a Reader arriving by keyboard gets the
+ * same acknowledgement — on top of, never instead of, the global focus ring. */
+@utility link-sweep {
+  background-image: linear-gradient(to right, var(--color-accent), var(--color-accent));
+  background-repeat: no-repeat;
+  background-position: left calc(100% - var(--underline-offset) + var(--rule-hairline));
+  background-size: 0 var(--rule-hairline);
+  transition: background-size var(--motion-quick) var(--motion-ease);
+}
+
+@media (hover: hover) {
+  .link-sweep:hover {
+    background-size: 100% var(--rule-hairline);
+  }
+}
+
+.link-sweep:focus-visible {
+  background-size: 100% var(--rule-hairline);
+}
+
+/* The suppression backstop.
+ *
+ * Every rule above is already gated on `prefers-reduced-motion: no-preference`,
+ * so this is the second line of defence rather than the mechanism — it catches
+ * a transition added later to a component in good faith, without the author
+ * having read this file.
+ *
+ * `0.01ms` rather than `none`: a duration of zero cancels the animation
+ * outright, and an animation that never runs also never fires `animationend`,
+ * which silently strands any code waiting on it. This lets everything complete
+ * immediately instead.
+ *
+ * `scroll-behavior: auto` is here because a smooth-scrolled anchor jump is
+ * motion too — and it is the kind most likely to make a Reader who set this
+ * preference feel unwell. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
 }

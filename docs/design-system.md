@@ -19,11 +19,13 @@ Declared in the `@theme` block, so Tailwind generates a utility for each.
 | `--container-*` | `measure` (prose width), `page` (page frame)                                  | `max-w-measure`, `max-w-page` |
 | `--rule-hairline` | the one rule weight                                                         | `rule-t`, `rule-b`   |
 | `--underline-offset` | how far a link's underline clears its descenders                     | `link`               |
+| `--walkthrough-height` | how tall the Walkthrough player may get                            | `walkthrough`        |
 | `--focus-*`   | `width`, `offset`                                                               | applied globally     |
+| `--motion-*`  | `quick`, `settle`, `reveal`, `ease`, `rise`, `stagger`                          | `reveal`, `settle`, `rule-draw`, `link-sweep` |
 
 Each `--text-*` size carries its own line height, and `meta` and `display` carry letter spacing, so choosing a size chooses a whole setting rather than one number. The scale has more steps than the site currently uses; that is what a scale is.
 
-Rules and links get named utilities (`rule-t`, `rule-b`, `link`) because Tailwind has no token namespace for a border-plus-colour or an underline treatment, and spelling them out at each call site puts raw numbers back in components.
+Rules and links get named utilities (`rule-t`, `rule-b`, `link`) because Tailwind has no token namespace for a border-plus-colour or an underline treatment, and spelling them out at each call site puts raw numbers back in components. `walkthrough` is the same move for the Walkthrough player's frame: the height cap, the aspect-preserving width and the hairline around it are one decision — how a portrait recording sits in a page of prose — and splitting them puts a raw height back in a component.
 
 ## The register
 
@@ -36,6 +38,26 @@ Light is the default. Dark is the same token names resolved to different values 
 ## Focus
 
 `:focus-visible` is styled once, globally, for every element. A component does not opt in, and must not opt out — `tests/keyboard.spec.ts` asserts a visible change on focus for every interactive element on every route.
+
+## Motion
+
+Restrained by design, and CSS-only — no animation library, no JavaScript. See [ADR 0005](adr/0005-css-scroll-driven-motion-without-a-library.md).
+
+The baseline is a short rise as a block enters the viewport, driven by `animation-timeline: view()`, plus transitions on hover and focus. On top of that sit three signature moments:
+
+| Moment | Where | What it does |
+| ------ | ----- | ------------ |
+| **Hero stagger** | `Hero` | The hero's five parts settle in sequence on load, in the order of the argument they make. The one piece of motion that is not scroll-driven, because the hero is already in view. |
+| **Rule draw** | `SectionHeading`, `ProjectRow`, `DeepDive` | A section's hairline draws itself from the left as the section arrives. The rules are the strongest part of the editorial register, so they get the deliberate moment. |
+| **Underline sweep** | every `link` | An accent-weight line sweeps in beneath the resting underline on hover and on focus. The same gesture as the rule draw at the scale of one link. |
+
+Three rules govern everything here, and all three are asserted in `tests/motion.spec.ts` on every route:
+
+1. **Motion never makes content visible.** Animated elements are fully visible with no animation running; the reveal moves something already there. This is what makes reduced-motion suppression safe — cancel every animation and the page is complete. A reveal built the usual way, with `opacity: 0` at rest, hides content permanently from exactly the Readers who asked for less movement.
+2. **Nothing animates the opacity of text.** Any opacity below 1 lowers contrast, and `text-muted` has no headroom to give away. The movement carries the reveal.
+3. **Only `transform` and `opacity` are animated.** Composited, so a frame costs no layout and no paint, and the layout-shift score stays at zero while the Reader scrolls.
+
+Adding motion to a component means using `reveal` (or `settle` in the hero) and nothing else. A `transition` written by hand in a component is not caught by `check:tokens` — it carries no colour and no arbitrary value — so the reduced-motion backstop at the foot of `globals.css` exists to catch it.
 
 ## Typefaces
 

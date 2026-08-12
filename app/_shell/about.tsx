@@ -37,7 +37,7 @@ export function About({ locale }: { locale: Locale }) {
 
       {/* Held to the measure: this is the longest stretch of running prose on
           the home page, and it is the one that has to actually be read. */}
-      <div className="mt-10 max-w-measure">
+      <div className="reveal mt-10 max-w-measure">
         <p className="text-lede text-ink">{strings.story}</p>
         <p className="mt-6 text-body text-muted">{strings.practice}</p>
         <p className="mt-6 text-body text-muted">{strings.tooling}</p>

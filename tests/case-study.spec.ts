@@ -12,6 +12,14 @@ import { visitRoute } from "./visit";
  * Deep Dive repeats as the same unit rather than as three hand-written
  * sections, that a figure's caption is attached to its figure, and that the
  * heading outline has no holes in it.
+ *
+ * The Walkthrough checks are the exception to "shape rather than content", and
+ * deliberately so. It is the site's only proof the application actually runs,
+ * and its failure modes are behavioural rather than structural — it autoplays,
+ * it downloads eight megabytes nobody asked for, it becomes the largest
+ * contentful paint element, or it plays a silent recording with nothing
+ * explaining it. Each of those is asserted directly, and each survives ticket
+ * 13 swapping the placeholder recording for the real one.
  */
 
 const CASE_STUDIES = routes.filter((route) => route.key === "caseStudy");
@@ -22,6 +30,11 @@ const MOVES_PER_DEEP_DIVE = 4;
 /** The Deep Dives, found by the section that titles them. */
 function deepDives(page: Page): Locator {
   return page.locator("section[id^='deep-dive-']");
+}
+
+/** The Walkthrough player, found through its section rather than by being the page's only video. */
+function walkthroughVideo(page: Page): Locator {
+  return page.locator("section[aria-labelledby='walkthrough'] video");
 }
 
 /** The document outline, as a screen reader would walk it. */
@@ -130,23 +143,217 @@ test.describe("Deep Dives", () => {
   }
 });
 
-test.describe("the Walkthrough slot", () => {
+test.describe("the Walkthrough", () => {
   for (const route of CASE_STUDIES) {
-    test(`${route.path} promises no Walkthrough it cannot show`, async ({ page }) => {
+    test(`${route.path} sits the player in its slot in the Case Study`, async ({
+      page,
+    }) => {
       await visitRoute(page, route.path);
 
-      // The player is ticket 08. Until it exists the slot must render nothing
-      // at all — an empty frame or a "coming soon" would be a promise the site
-      // cannot keep, and an empty landmark would leave a hole in the outline.
+      // The Walkthrough carries the site's proof: with no live demo and no
+      // store listing, it is the only evidence the application runs. So it is
+      // a titled part of the page rather than a video dropped into the prose.
       await expect(
-        page.locator("#walkthrough"),
-        `${route.path} renders a Walkthrough section with no Walkthrough in it.`,
-      ).toHaveCount(0);
+        page.locator("section[aria-labelledby='walkthrough']"),
+        `${route.path} has no Walkthrough section, so the Case Study offers no evidence the application runs.`,
+      ).toHaveCount(1);
 
       await expect(
-        page.locator("video, iframe"),
-        `${route.path} embeds a player, but the Walkthrough has not been recorded yet.`,
-      ).toHaveCount(0);
+        walkthroughVideo(page),
+        `${route.path} has a Walkthrough section with no player in it.`,
+      ).toHaveCount(1);
+
+      // Above the architecture, which is the order the Case Study argues in:
+      // proof it runs, then how it is built.
+      const [walkthrough, architecture] = await page.evaluate(() =>
+        ["walkthrough", "architecture"].map((id) => {
+          const section = document.querySelector(`section[aria-labelledby="${id}"]`);
+          return section ? section.getBoundingClientRect().top : Number.NaN;
+        }),
+      );
+
+      expect(
+        walkthrough,
+        `${route.path} places the Walkthrough after the architecture, so a Reader is told how it is built before being shown that it runs.`,
+      ).toBeLessThan(architecture);
+    });
+
+    test(`${route.path} plays only on the Reader's action`, async ({ page }) => {
+      await visitRoute(page, route.path);
+
+      const video = walkthroughVideo(page);
+
+      // Autoplay is the failure this asserts against, in all three forms it
+      // takes: the attribute, a script calling play(), and the muted+inline
+      // combination browsers permit to start on its own.
+      expect(
+        await video.evaluate((element: HTMLVideoElement) => element.hasAttribute("autoplay")),
+        `${route.path} marks the Walkthrough autoplay.`,
+      ).toBe(false);
+
+      // Settle past load: anything that was going to start on its own has had
+      // its chance by now.
+      await page.waitForTimeout(1200);
+
+      const state = await video.evaluate((element: HTMLVideoElement) => ({
+        paused: element.paused,
+        currentTime: element.currentTime,
+      }));
+
+      expect(
+        state.paused,
+        `${route.path} starts the Walkthrough without being asked, which takes the Reader's attention and their bandwidth.`,
+      ).toBe(true);
+
+      expect(
+        state.currentTime,
+        `${route.path} has advanced the Walkthrough before the Reader asked for it.`,
+      ).toBe(0);
+
+      // And it does play when asked — otherwise every check above passes on a
+      // player that is simply broken.
+      await video.evaluate(async (element: HTMLVideoElement) => {
+        element.muted = true;
+        await element.play();
+      });
+
+      await expect
+        .poll(
+          async () => video.evaluate((element: HTMLVideoElement) => element.currentTime),
+          {
+            message: `${route.path} does not play the Walkthrough when asked, so the site's only proof the application runs does not run.`,
+          },
+        )
+        .toBeGreaterThan(0);
+    });
+
+    test(`${route.path} shows a poster and fetches no video until asked`, async ({
+      page,
+    }) => {
+      const videoRequests: string[] = [];
+      page.on("request", (request) => {
+        if (request.resourceType() === "media" || /\.(mp4|webm|mov)$/i.test(request.url())) {
+          videoRequests.push(request.url());
+        }
+      });
+
+      await visitRoute(page, route.path);
+
+      const video = walkthroughVideo(page);
+
+      const poster = await video.getAttribute("poster");
+      expect(
+        poster,
+        `${route.path} shows no poster before playback, so the Walkthrough is a black rectangle until a Reader guesses there is something in it.`,
+      ).toBeTruthy();
+
+      // The poster has to actually be served. A path pointing at nothing looks
+      // identical to no poster at all from the markup.
+      const posterResponse = await page.request.get(new URL(poster!, page.url()).toString());
+      expect(
+        posterResponse.status(),
+        `${route.path} points its poster at ${poster}, which is not served.`,
+      ).toBe(200);
+
+      // The whole performance argument for the player rests on this: the video
+      // is the largest file on the site and none of it may be fetched to render
+      // a page a Reader might never press play on.
+      expect(
+        await video.getAttribute("preload"),
+        `${route.path} lets the browser preload the Walkthrough, so its bytes are spent before a Reader asks for them.`,
+      ).toBe("none");
+
+      await page.waitForTimeout(1200);
+
+      expect(
+        videoRequests,
+        `${route.path} fetched video bytes without the Reader asking:\n  ${videoRequests.join("\n  ")}`,
+      ).toEqual([]);
+    });
+
+    test(`${route.path} is not the largest contentful paint element`, async ({ page }) => {
+      await visitRoute(page, route.path);
+
+      // Reading the real LCP entry rather than reasoning about it: the poster
+      // is a large portrait image near the top of the page, which is exactly
+      // the shape of thing that becomes LCP by accident and puts the audit
+      // threshold at risk.
+      const lcp = await page.evaluate(
+        () =>
+          new Promise<string>((resolve) => {
+            const read = (): string => {
+              const entries = performance.getEntriesByType("largest-contentful-paint");
+              const last = entries[entries.length - 1] as
+                | (PerformanceEntry & { element?: Element })
+                | undefined;
+              return last?.element?.tagName ?? "";
+            };
+
+            new PerformanceObserver(() => {}).observe({
+              type: "largest-contentful-paint",
+              buffered: true,
+            });
+
+            // LCP settles as late-arriving content paints; one frame past load
+            // is where it stops moving on a page this static.
+            requestAnimationFrame(() => requestAnimationFrame(() => resolve(read())));
+          }),
+      );
+
+      expect(
+        ["VIDEO", "IMG"],
+        `${route.path} paints the Walkthrough as its largest contentful element (${lcp}), so the page's headline metric is set by a file the Reader may never play.`,
+      ).not.toContain(lcp);
+    });
+
+    test(`${route.path} conveys the Walkthrough without audio`, async ({ page }) => {
+      await visitRoute(page, route.path);
+
+      const video = walkthroughVideo(page);
+
+      // The recording is silent, so a Reader who cannot see it gets nothing
+      // from the file itself. Two things have to carry it instead.
+      const track = video.locator("track[kind='captions']");
+      await expect(
+        track,
+        `${route.path} offers no captions, so a silent recording is the whole of what a Reader who cannot see it receives.`,
+      ).toHaveCount(1);
+
+      const src = await track.getAttribute("src");
+      const captionResponse = await page.request.get(new URL(src!, page.url()).toString());
+      expect(
+        captionResponse.status(),
+        `${route.path} points its caption track at ${src}, which is not served.`,
+      ).toBe(200);
+      expect(
+        (await captionResponse.text()).startsWith("WEBVTT"),
+        `${route.path} serves a caption track that is not WebVTT, so no browser will show it.`,
+      ).toBe(true);
+
+      // A textual description beside the player, for a Reader who will not
+      // play a video at all — which on a page read at work is many of them.
+      const description = page.locator(
+        "section[aria-labelledby='walkthrough'] figcaption",
+      );
+      expect(
+        (await description.innerText()).trim().length,
+        `${route.path} shows the Walkthrough with no description beside it, so its content is unavailable to a Reader who does not press play.`,
+      ).toBeGreaterThan(80);
+    });
+
+    test(`${route.path} gives the player visible controls`, async ({ page }) => {
+      await visitRoute(page, route.path);
+
+      // `controls` is what makes the player keyboard-operable and screen-reader
+      // labelled without a line of script. tests/keyboard.spec.ts already tabs
+      // to `video[controls]` and demands a visible focus ring; a custom player
+      // would have to re-earn all of that.
+      expect(
+        await walkthroughVideo(page).evaluate((element: HTMLVideoElement) =>
+          element.hasAttribute("controls"),
+        ),
+        `${route.path} renders the Walkthrough without controls, so a Reader has no way to play, pause or seek it.`,
+      ).toBe(true);
     });
   }
 });

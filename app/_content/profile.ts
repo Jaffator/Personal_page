@@ -14,6 +14,20 @@ import type { Localised } from "./localised";
  * profile, the work preference — is `Localised`.
  */
 
+/**
+ * The author's name, as the site's wordmark writes it.
+ *
+ * Not `Localised`: a person's name is the same in both languages, and the
+ * header renders it identically either way.
+ *
+ * The name also appears in each locale's `hero.name` and page titles. Those are
+ * not read from here — a page title is a written sentence the name happens to
+ * sit inside, and threading a constant through them would buy nothing. This
+ * constant exists so the wordmark, which is the site's identity rather than any
+ * one page's copy, has a source that is not some other component's string.
+ */
+export const NAME = "Jaroslav Lufinka";
+
 /** Where the author is. Stated, because a Reader is placing him on a map. */
 export const CITY = "Jablonec nad Nisou";
 

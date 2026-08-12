@@ -23,7 +23,7 @@ export function ProjectRow({ project, locale }: { project: Project; locale: Loca
   const caseStudyPath = pathTo(locale, project.caseStudy);
 
   return (
-    <article aria-labelledby={titleId} className="rule-t py-10">
+    <article aria-labelledby={titleId} className="reveal rule-draw rule-t py-10">
       <h3 id={titleId} className="text-title font-semibold text-ink">
         {/* The whole route into the Case Study is this one link. The visible
             text is the Project's name, so it reads as a title; the accessible
@@ -32,7 +32,7 @@ export function ProjectRow({ project, locale }: { project: Project; locale: Loca
         <Link
           href={caseStudyPath}
           aria-label={`${project.title} — ${strings.selectedWork.readCaseStudy}`}
-          className="link"
+          className="link link-sweep"
         >
           {project.title}
         </Link>

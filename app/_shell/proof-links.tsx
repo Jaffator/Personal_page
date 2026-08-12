@@ -47,7 +47,7 @@ export function ProofLinks({
     <ul className={`${spacing} flex flex-wrap gap-x-6 gap-y-2 text-small`}>
       {links.map((link) => (
         <li key={link.kind}>
-          <a className="link" href={link.href} rel="noreferrer">
+          <a className="link link-sweep" href={link.href} rel="noreferrer">
             {strings.proofLinks[link.kind]}
           </a>
           {link.note ? <span className="text-muted"> — {link.note[locale]}</span> : null}

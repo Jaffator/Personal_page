@@ -70,6 +70,50 @@ test.describe("the page declares its language", () => {
   }
 });
 
+test.describe("the wordmark links home", () => {
+  for (const route of routes) {
+    /**
+     * The Case Study is the page a Reader is sent to from a job application,
+     * so a large share of Readers arrive there first — with no back-button
+     * history and no other route to the rest of the site. The wordmark is
+     * what makes every page one click from home rather than a dead end.
+     *
+     * Found by its accessible name rather than by class, so a future
+     * restyling of `SiteHeader` cannot silently stop testing anything.
+     */
+    test(`${route.path} links to its own locale's home page`, async ({ page }) => {
+      await visitRoute(page, route.path);
+
+      const home = routes.find(
+        (candidate) => candidate.key === "home" && candidate.locale === route.locale,
+      );
+      if (!home) {
+        throw new Error(`No home route for locale ${route.locale} in the route inventory.`);
+      }
+
+      // The wordmark is the one link in the header that is not inside the
+      // language switch's own `nav`, whatever wrapper elements sit between it
+      // and `header` itself.
+      const wordmark = page.locator("header a:not(nav a)");
+
+      await expect(
+        wordmark,
+        `${route.path} has no link back to the home page outside the language switch.`,
+      ).toHaveCount(1);
+
+      await expect(
+        wordmark,
+        `${route.path}'s wordmark does not link to ${home.path}.`,
+      ).toHaveAttribute("href", home.path);
+
+      // Not a language-switch link in disguise: it must carry no `hreflang`,
+      // or `languageSwitch()` above would either double-count it or read it
+      // as a third language.
+      await expect(wordmark).not.toHaveAttribute("hreflang");
+    });
+  }
+});
+
 test.describe("the language switch", () => {
   for (const route of routes) {
     test(`${route.path} offers every locale and marks the active one`, async ({
