@@ -6,3 +6,8 @@
 # Self-hosted fonts. `text=auto` guesses correctly, but a mangled font file is
 # an expensive thing to debug, so say it outright.
 *.woff2 binary
+
+# The CV. `text=auto` would rewrite its line endings on checkout, and a PDF with
+# CRLF injected into its object stream no longer matches its own xref table —
+# a file that will not open, committed by a Reader-facing download link.
+*.pdf binary

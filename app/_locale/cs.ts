@@ -63,4 +63,43 @@ export const cs: Dictionary = {
     source: "Zdrojový kód na GitHubu",
     googlePlay: "Stáhnout z Google Play",
   },
+
+  stack: {
+    heading: "Technologie",
+    index: "02",
+  },
+
+  /**
+   * Written as Czech rather than translated. "Vyučil jsem se sám" carries the
+   * self-taught story the way a Czech Reader hears it; a literal rendering of
+   * "I taught myself" reads as a translation. The framing rule is the same in
+   * both languages: fact, never apology.
+   */
+  about: {
+    heading: "O mně",
+    index: "03",
+    story:
+      "Vývoj softwaru jsem se naučil sám a naučil jsem se ho tak, jak se dělá doopravdy: tím, že jsem něco skutečného dotáhl do konce a musel žít s vlastními rozhodnutími. Tím projektem je BikeCheck — plnohodnotná aplikace s doménovým modelem, API, databází a androidím buildem, ne tutoriál dovedený do konce.",
+    practice:
+      "Cestou jsem přišel na to, co do tutoriálů nikdo nepíše — namodelovat doménu dřív než schéma, rozhodnout, kde má složitost bydlet, a psát testy, díky kterým je změna bezpečná. Případová studie výše rozebírá tři taková rozhodnutí do hloubky včetně toho, co každé z nich stálo.",
+    tooling:
+      "Vyvíjím s AI nástroji po ruce, stejně jako dnes většina vývojářů, a každé rozhodnutí v tomhle projektu dokážu vysvětlit a obhájit kompromisy, které za ním stojí.",
+  },
+
+  contact: {
+    heading: "Kontakt",
+    index: "04",
+    lede: "Hledám vývojářskou pozici a čtu všechno, co mi přijde.",
+    emailLabel: "E-mail",
+    copyEmail: "Zkopírovat e-mailovou adresu",
+    copied: "E-mailová adresa zkopírována",
+    copyFailed: "Nepodařilo se zkopírovat — adresu můžete označit a zkopírovat ručně",
+    locationLabel: "Lokalita",
+    availability: "Otevřený práci na dálku i hybridně",
+    profiles: {
+      github: "Profil na GitHubu",
+      linkedin: "Profil na LinkedInu",
+    },
+    cv: "Stáhnout životopis (PDF)",
+  },
 };

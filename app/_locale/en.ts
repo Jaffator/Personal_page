@@ -1,3 +1,4 @@
+import type { ProfileKey } from "@/app/_content/profile";
 import type { ProofLinkKind } from "@/app/_content/projects";
 import type { RouteKey } from "./routes";
 
@@ -125,6 +126,110 @@ export const en = {
     source: "Source on GitHub",
     googlePlay: "Get it on Google Play",
   } satisfies Record<ProofLinkKind, string>,
+
+  /**
+   * The Stack section. The group names and the technologies under them are
+   * content, in `app/_content/profile.ts`; what is here is the furniture.
+   *
+   * There is no string for a proficiency, a level or a year count, and that is
+   * the design rather than an omission: a technical Reader treats "React 85%"
+   * as a red flag, because the claim cannot be true. Nothing here gives a
+   * component the vocabulary to make one.
+   */
+  stack: {
+    heading: "Stack",
+    index: "02",
+  },
+
+  /**
+   * The About section: the self-taught story, told as fact.
+   *
+   * It is interface by the test in docs/content.md — every line is about the
+   * author rather than about a Project, so it would still be here with no
+   * Projects at all — and it is prose, so it is the longest thing the
+   * dictionary carries. It stays here rather than moving to MDX because MDX on
+   * this site is reserved for Case Study prose (ADR 0002), and About is three
+   * paragraphs of interface rather than a document.
+   *
+   * The framing rule: what was built while learning, stated as fact. No
+   * apology, no "only", no "despite having no commercial experience" — the
+   * Case Study is what sets the level, and an apology here decides the question
+   * before a Reader reaches it.
+   */
+  about: {
+    heading: "About",
+    index: "03",
+    /**
+     * The path, stated plainly. It names what was actually built, because a
+     * Reader weighs the work rather than the route to it.
+     */
+    story:
+      "I taught myself to build software, and I learned it the way it is actually done: by shipping something real and living with the decisions. BikeCheck is that project — a full application with a domain model, an API, a database and an Android build, not a tutorial followed to the end.",
+    /**
+     * What the learning consisted of, in the terms a Reader grades by. It
+     * claims process rather than seniority: the thing being evidenced is that
+     * he reasons about trade-offs, which the Case Study then demonstrates.
+     */
+    practice:
+      "Along the way I picked up the parts nobody puts in a tutorial — modelling a domain before writing the schema, choosing where the complexity should live, and writing the tests that make a change safe. The Case Study above walks through three of those decisions in full, including what each one cost.",
+    /**
+     * The one line about AI tooling, and the only place on the site it appears.
+     * Said once, plainly, and never again: a second mention reads as either a
+     * defence or a selling point, and both undercut the first. What it claims
+     * is the thing that actually matters to a Reader — that he can explain the
+     * decisions, whatever helped him reach them.
+     * `tests/home-sections.spec.ts` asserts the count on the page is exactly one.
+     */
+    tooling:
+      "I build with AI tooling in the loop, the same as most working developers now, and I can explain every decision in this project and defend the trade-offs behind it.",
+  },
+
+  /**
+   * The Contact section.
+   *
+   * There is no string for a form field, a submit button or a success message,
+   * because there is no form: the site has no backend, and a form that silently
+   * swallows a message during a job search is a catastrophic failure. The email
+   * is shown as text a Reader can read and copy.
+   */
+  contact: {
+    heading: "Contact",
+    index: "04",
+    /** Introduces the section. States availability rather than pleading for a reply. */
+    lede: "I am looking for a developer role and I read everything that arrives.",
+    /** Names the address for a screen reader, which does not get the visual grouping. */
+    emailLabel: "Email",
+    /**
+     * The copy control's name. It names the object, not the gesture, so it is
+     * clear when read out of context in a list of a page's controls.
+     */
+    copyEmail: "Copy email address",
+    /**
+     * Announced after a successful copy, through a live region. A screen-reader
+     * Reader gets no confirmation from a button that merely changed colour.
+     */
+    copied: "Email address copied",
+    /**
+     * Announced when the clipboard is refused — an insecure origin, or a
+     * browser that withholds permission. Saying so is what lets a Reader fall
+     * back to selecting the address, which is visible precisely for this case.
+     */
+    copyFailed: "Could not copy — select the address to copy it manually",
+    /** Where he is. A fact a Reader placing him against a role needs. */
+    locationLabel: "Location",
+    /** How he will work. Stated plainly rather than left to be asked. */
+    availability: "Open to remote or hybrid work",
+    /** Names each profile link. The name says where it goes, not "here". */
+    profiles: {
+      github: "GitHub profile",
+      linkedin: "LinkedIn profile",
+    } satisfies Record<ProfileKey, string>,
+    /**
+     * The CV link. It names the format, because a Reader deciding whether to
+     * click wants to know a PDF is about to arrive.
+     */
+    cv: "Download CV (PDF)",
+  },
 };
 
 /**

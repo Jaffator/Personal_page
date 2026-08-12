@@ -1,0 +1,77 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> /Contents 4 0 R >>
+endobj
+4 0 obj
+<< /Length 3318 >>
+stream
+BT /F2 22 Tf 0 0 0 rg 1 0 0 1 64 780 Tm (Jaroslav Lufinka) Tj ET
+BT /F1 10 Tf 0.35 0.35 0.35 rg 1 0 0 1 64 760 Tm (Full-stack developer \227 Jablonec nad Nisou, Czech Republic) Tj ET
+BT /F1 9 Tf 0.35 0.35 0.35 rg 1 0 0 1 64 746 Tm (jardalufi@gmail.com   |   github.com/Jaffator   |   linkedin.com/in/jaroslav-lufinka) Tj ET
+BT /F1 9 Tf 0.35 0.35 0.35 rg 1 0 0 1 64 734 Tm (Open to remote or hybrid work) Tj ET
+BT /F2 8 Tf 0.35 0.35 0.35 rg 1 0 0 1 64 710 Tm (PROFILE) Tj ET
+0.85 0.85 0.85 rg 64 706 468 0.6 re f
+BT /F1 10 Tf 0 0 0 rg 1 0 0 1 64 688 Tm (Self-taught developer who builds products end to end, from the job queue to the screen.) Tj ET
+BT /F1 10 Tf 0 0 0 rg 1 0 0 1 64 675 Tm (Learned by shipping a complete application rather than by following tutorials: BikeCheck) Tj ET
+BT /F1 10 Tf 0 0 0 rg 1 0 0 1 64 662 Tm (has a domain model, a REST API, a PostgreSQL database and an Android build.) Tj ET
+BT /F2 8 Tf 0.35 0.35 0.35 rg 1 0 0 1 64 641 Tm (SELECTED WORK) Tj ET
+0.85 0.85 0.85 rg 64 637 468 0.6 re f
+BT /F2 11 Tf 0 0 0 rg 1 0 0 1 64 619 Tm (BikeCheck \227 Android application for bicycle service history) Tj ET
+BT /F1 9 Tf 0.35 0.35 0.35 rg 1 0 0 1 64 606 Tm (TypeScript, React, Capacitor, NestJS, PostgreSQL, Prisma) Tj ET
+BT /F1 10 Tf 0 0 0 rg 1 0 0 1 74 593 Tm (Designed and built end to end: domain model, database schema, REST API and mobile client.) Tj ET
+BT /F1 10 Tf 0 0 0 rg 1 0 0 1 74 581 Tm (Tracks service history and component wear across multiple bicycles.) Tj ET
+BT /F1 10 Tf 0 0 0 rg 1 0 0 1 74 569 Tm (Packaged for Android with Capacitor; actively in development.) Tj ET
+BT /F1 9 Tf 0.35 0.35 0.35 rg 1 0 0 1 74 557 Tm (github.com/Jaffator/BikeCheck) Tj ET
+BT /F2 8 Tf 0.35 0.35 0.35 rg 1 0 0 1 64 535 Tm (STACK) Tj ET
+0.85 0.85 0.85 rg 64 531 468 0.6 re f
+BT /F2 9 Tf 0 0 0 rg 1 0 0 1 64 513 Tm (Languages) Tj ET
+BT /F1 10 Tf 0 0 0 rg 1 0 0 1 160 513 Tm (TypeScript, JavaScript, SQL, HTML, CSS) Tj ET
+BT /F2 9 Tf 0 0 0 rg 1 0 0 1 64 499 Tm (Frontend) Tj ET
+BT /F1 10 Tf 0 0 0 rg 1 0 0 1 160 499 Tm (React, Next.js, Tailwind CSS, Mantine UI, Vite) Tj ET
+BT /F2 9 Tf 0 0 0 rg 1 0 0 1 64 485 Tm (Backend) Tj ET
+BT /F1 10 Tf 0 0 0 rg 1 0 0 1 160 485 Tm (NestJS, Node.js, Prisma, PostgreSQL, REST) Tj ET
+BT /F2 9 Tf 0 0 0 rg 1 0 0 1 64 471 Tm (Mobile) Tj ET
+BT /F1 10 Tf 0 0 0 rg 1 0 0 1 160 471 Tm (Capacitor, Android) Tj ET
+BT /F2 9 Tf 0 0 0 rg 1 0 0 1 64 457 Tm (Tooling) Tj ET
+BT /F1 10 Tf 0 0 0 rg 1 0 0 1 160 457 Tm (Git, GitHub Actions, Docker, Playwright, Figma) Tj ET
+BT /F2 8 Tf 0.35 0.35 0.35 rg 1 0 0 1 64 435 Tm (HOW I WORK) Tj ET
+0.85 0.85 0.85 rg 64 431 468 0.6 re f
+BT /F1 10 Tf 0 0 0 rg 1 0 0 1 74 413 Tm (Model the domain before writing the schema; decide where complexity should live.) Tj ET
+BT /F1 10 Tf 0 0 0 rg 1 0 0 1 74 401 Tm (Write the tests that make a change safe, and verify against the built artefact.) Tj ET
+BT /F1 10 Tf 0 0 0 rg 1 0 0 1 74 389 Tm (Take a feature end to end: schema, API, client, and the build that ships it.) Tj ET
+BT /F2 8 Tf 0.35 0.35 0.35 rg 1 0 0 1 64 369 Tm (LANGUAGES) Tj ET
+0.85 0.85 0.85 rg 64 365 468 0.6 re f
+BT /F1 10 Tf 0 0 0 rg 1 0 0 1 64 347 Tm (Czech \227 native   |   English \227 reads and writes technical English daily) Tj ET
+BT /F1 8 Tf 0.45 0.45 0.45 rg 1 0 0 1 64 56 Tm (Full case study: jardalufi.cz/bikecheck) Tj ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+7 0 obj
+<< /Title (Jaroslav Lufinka  CV) /Author (Jaroslav Lufinka) /Subject (Curriculum vitae) /Creator (personal-site) >>
+endobj
+xref
+0 8
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000251 00000 n 
+0000003621 00000 n 
+0000003718 00000 n 
+0000003820 00000 n 
+trailer
+<< /Size 8 /Root 1 0 R /Info 7 0 R >>
+startxref
+3952
+%%EOF

@@ -63,6 +63,23 @@ passes accessibility, overflow and audit checks quite happily.
   no value renders nothing — no Google Play link, no empty slot. Assertions are
   per rendered Project rather than about BikeCheck, so a second Project is held
   to the same bar without a line changing here. See [content.md](content.md).
+- **`tests/home-sections.spec.ts`** — Stack, About and Contact are each named
+  landmarks; the Stack is grouped rather than flat and carries no proficiency
+  indicator in any form — text, meter, or a bar sized to a fraction of its track;
+  About tells the story in prose without apologising for it, and mentions AI
+  tooling exactly once across the whole page, in that section; the email is
+  visible as text, copies to the clipboard by keyboard alone, and announces the
+  result through a live region; Contact still shows the address and a `mailto:`
+  link with JavaScript disabled; GitHub, LinkedIn, the city and the work
+  preference are all present; the CV is served, is a real PDF and downloads
+  under a name that identifies its author; and no form or third-party form
+  service appears anywhere. The accuracy checks read the whole of `main`,
+  because it does not matter which component would have introduced a false
+  claim. Two checks run under both colour schemes rather than relying on the
+  axe scan: the proficiency-bar detector reads a resolved `background-color`,
+  and the copy confirmation is measured for contrast against whatever it
+  actually sits on — both are questions a theme can answer differently. See
+  [content.md](content.md).
 - **`tests/case-study.spec.ts`** — the Case Study renders at its own URL in both
   locales and composes its parts in order; the Deep Dive repeats three times as
   one unit, each making all four moves under the same labels; a captioned figure

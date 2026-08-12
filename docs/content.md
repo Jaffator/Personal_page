@@ -4,8 +4,8 @@ Three mechanisms carry text on this site, with firm boundaries between them:
 
 | Mechanism | Lives in | Holds |
 | --------- | -------- | ----- |
-| **Interface strings** | `app/_locale/en.ts`, `app/_locale/cs.ts` | Labels, headings, link text — the furniture around content |
-| **Structured content** | `app/_content/` | Projects, their stack, their Proof Links |
+| **Interface strings** | `app/_locale/en.ts`, `app/_locale/cs.ts` | Labels, headings, link text — the furniture around content, plus the About prose |
+| **Structured content** | `app/_content/` | Projects, their stack, their Proof Links; the author's Stack groups and contact details |
 | **Case Study prose** | `app/_case-study/<slug>/<locale>/*.mdx` | Long-form writing, per [ADR 0002](adr/0002-mdx-per-locale-for-case-studies.md) |
 
 Do not migrate one into the other. The test for which a piece of text is: if it
@@ -50,6 +50,91 @@ The Czech hero is written as Czech rather than translated from the English —
 "full-stack vývojář" is what a Czech job advert says. The test asserts the two
 differ and that the Czech carries diacritics; whether it *reads* well is a
 human check.
+
+## The Stack, About and Contact
+
+The rest of the home page below Selected Work. The split follows the same test
+as everywhere else, and lands in two places:
+
+- **`app/_content/profile.ts`** — the Stack groups, the email, the city, the
+  profile URLs and the CV. These describe a particular person and would not
+  survive being rewritten for someone else, so they are content.
+- **`app/_locale/{en,cs}.ts`** — the headings, the labels, the copy control's
+  strings, and the About prose. Every one is about the author rather than about
+  a Project, so it would still be there with no Projects at all.
+
+About is the one stretch of prose in the dictionary rather than in MDX. MDX on
+this site is reserved for Case Study prose (ADR 0002); About is three paragraphs
+of interface, and moving it would make the boundary a matter of length rather
+than of kind.
+
+### The Stack states no proficiency
+
+No bars, no star ratings, no percentages, no year counts. A technical Reader
+treats "React 85%" as a red flag, because the claim cannot be true — 85% of
+what, measured by whom — and the one entry that provokes the question costs more
+than the whole section gains. `StackGroup` gives a component nowhere to put a
+rating, and `tests/home-sections.spec.ts` asserts the absence three ways,
+because a rating can be drawn as text, as a widget, or as a bar.
+
+### About says one line about AI tooling
+
+Once, in About, and nowhere else on the site. Said twice it reads as a defence;
+said as a feature it reads as a selling point; and both undercut the honest
+version. What the line claims is the part a Reader is actually weighing — that
+he can explain the decisions and defend the trade-offs. The test counts mentions
+across the whole of `main` and requires exactly one, in that section.
+
+The same framing rule governs the rest of About: the self-taught story is stated
+as fact, with no apology and no level label. The Case Study is what sets the
+level, and an apology here overwrites a Reader's own conclusion with a worse one.
+
+### Contact has no form, and the email is one constant
+
+The site is statically exported and has no backend (ADR 0001). A form would
+either post nowhere or post to a third-party service, and one that silently
+swallows a message during a job search is the worst failure this site could
+have. So the address is shown as text, as a `mailto:` link, and beside a control
+that copies it — and `EMAIL` in `app/_content/profile.ts` is the single source
+for all three. Written out three times, it would be three chances to ship a typo
+in the one string on the site that has to be exactly right.
+
+`app/_shell/copy-email.tsx` ships the **only script on the site**. Writing to the
+clipboard has no declarative form, and the alternative is a Reader
+hand-selecting an address, which is where a character gets dropped and a reply
+never arrives.
+
+It is deliberately **not** a React client component. One `"use client"` module
+makes Next.js hydrate the whole page, and the measured cost was ~574 KB of
+framework runtime for a button that writes an address to the clipboard — on a
+site whose premise is that it ships no JavaScript. What ships instead is a few
+hundred bytes of inline handler, attached by id, with no runtime and no
+hydration. There are no client components in `app/`.
+
+It is an enhancement and never the route itself: the address and the `mailto:`
+link are server-rendered, so the section works whole with JavaScript disabled —
+which is what makes shipping the script acceptable at all. The outcome is
+announced through a live region that is always in the DOM, since a region added
+at the moment it has something to say is frequently missed.
+
+### The CV
+
+A static PDF in `public/`, versioned with the site so it cannot drift from what
+is deployed. It downloads under the author's name rather than `cv.pdf`, because
+it lands in a folder among files from every other candidate. The test asserts
+the file is served, begins with `%PDF-`, and is not empty — so an HTML error
+page renamed `.pdf` fails the build rather than a Reader's download.
+
+> **The committed PDF is a placeholder and must be replaced before deploy.**
+> `scripts/build-cv.mjs` generates it from what this repository already states —
+> the positioning, BikeCheck, the Stack, the contact facts — so every line in it
+> is true. It is not a complete CV: it carries no employment history, no
+> education and no dates, because the repository does not know them, and
+> inventing them on a job-seeking document is worse than shipping nothing. It
+> exists so the link, the filename and the content type are real and under test
+> from the day the section ships. Replace it by filling in the script and
+> re-running `node scripts/build-cv.mjs`, or by dropping a real PDF at the same
+> path.
 
 ## Localised values
 
