@@ -1,0 +1,13 @@
+{/* Placeholder prose. The real copy is ticket 14. */}
+
+Three pieces: a React front end packaged by Capacitor into an Android application,
+a NestJS API, and PostgreSQL reached through Prisma.
+
+The domain lives on the server. A bicycle, its components, and the rides that wear
+them are modelled once, in the database schema, and the application reads that
+model rather than keeping a second version of it. Wear is derived from ride data
+rather than stored as a number that has to be kept correct.
+
+Each domain owns a controller and a service, and business logic sits in the
+service. There is no shared layer every feature reaches into, which is the thing
+that usually rots first.

@@ -1,0 +1,5 @@
+{/* Placeholder prose. The real copy is ticket 14. */}
+
+- **A wear counter on the component** — one number, updated on every ride. Simple until a part moves, at which point the number is a lie and there is no record to rebuild it from.
+- **Wear on the bicycle–component pair** — closer, but it still stores a derived value, and it answers "how worn is this chain" only by summing rows the schema does not relate.
+- **A fitment period, and derive from rides inside it** — model the fact that a component was on a bicycle between two dates, and let every wear question be a query over rides in that window.

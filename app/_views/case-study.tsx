@@ -1,42 +1,67 @@
+import { bikecheckCaseStudy } from "@/app/_case-study/bikecheck";
+import { CaseStudyLayout } from "@/app/_case-study/layout";
+import { DeepDive } from "@/app/_case-study/deep-dive";
 import { projects } from "@/app/_content/projects";
 import { dictionaries } from "@/app/_locale/dictionaries";
 import type { Locale, RouteKey } from "@/app/_locale/routes";
 import { SiteHeader } from "@/app/_shell/site-header";
 
 /**
- * The Case Study, as a placeholder.
+ * The Case Study — the page a Reader is sent to from a job application.
  *
- * The route exists now because Selected Work links into it, and a link a
- * Reader can follow to a 404 is worse than no link at all. What it renders is
- * deliberately thin: ticket 05 builds the real page — MDX prose per locale
- * through one shared layout, per ADR 0002 — and replaces this body. The route
- * key, the metadata and the suite's coverage of it are already in place by
- * then.
+ * This file binds one Project's documents to the shared layout and does
+ * nothing else. That is the shape the ticket asks for: a second Project's Case
+ * Study is another document set and another binding, not another page
+ * component. The prose is MDX per locale (ADR 0002); the structure, the
+ * headings and the register are `app/_case-study/`.
  *
- * It reads its title from the content module rather than from a dictionary,
- * because a Project's name is content and there is exactly one place it is
- * written down.
+ * The title comes from the content module rather than a dictionary, because a
+ * Project's name is content and there is one place it is written down.
  */
 
 const ROUTE: RouteKey = "caseStudy";
 
 export function CaseStudyView({ locale }: { locale: Locale }) {
   const project = projects[0];
-  const strings = dictionaries[locale].home;
+  const documents = bikecheckCaseStudy[locale];
+  const labels = dictionaries[locale].caseStudy.deepDive;
 
   return (
     <>
       <SiteHeader locale={locale} route={ROUTE} />
 
-      <main className="mx-auto max-w-page px-6 pb-24 pt-8">
-        <p className="font-mono text-meta text-muted uppercase">{strings.eyebrow}</p>
+      <CaseStudyLayout
+        locale={locale}
+        title={project.title}
+        lede={project.description[locale]}
+        parts={{
+          opening: <documents.opening />,
+          architecture: <documents.architecture />,
+          featureTour: <documents.featureTour />,
+          retrospective: <documents.retrospective />,
 
-        <h1 className="mt-6 text-display font-semibold text-ink">{project.title}</h1>
+          // The same component three times, differing only in its documents —
+          // which is the claim the ticket makes about a Deep Dive being a
+          // repeatable unit rather than markup written per topic.
+          deepDives: documents.deepDives.map((dive, index) => (
+            <DeepDive
+              key={dive.title}
+              id={`deep-dive-${index + 1}`}
+              index={String(index + 1).padStart(2, "0")}
+              title={dive.title}
+              labels={labels}
+              constraint={<dive.constraint />}
+              options={<dive.options />}
+              choice={<dive.choice />}
+              cost={<dive.cost />}
+            />
+          )),
 
-        <p className="mt-8 max-w-measure text-lede text-muted">
-          {project.description[locale]}
-        </p>
-      </main>
+          // The player is ticket 08. Until then the slot renders nothing at
+          // all rather than a placeholder promising a video that does not
+          // exist.
+        }}
+      />
     </>
   );
 }

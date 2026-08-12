@@ -7,9 +7,15 @@
  * enough to make dark mode a rewrite, and it is invisible in review until the
  * theme is switched — so it is caught here instead.
  *
- * It scans the component code under app/ and nothing else. CSS is not scanned
- * at all, because app/globals.css is the one place values are allowed to
- * exist; if a second stylesheet ever appears, it belongs here.
+ * It scans the component code under app/, plus mdx-components.tsx at the root —
+ * which Next.js requires by that name and path, and which carries the classes
+ * every piece of Case Study prose is rendered with, so leaving it out would
+ * exempt the site's most important page. `.mdx` is scanned too: a prose
+ * document can write raw JSX, and a `className` typed into one would otherwise
+ * reach the built page unchecked.
+ *
+ * CSS is not scanned at all, because app/globals.css is the one place values
+ * are allowed to exist; if a second stylesheet ever appears, it belongs here.
  */
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
@@ -17,7 +23,8 @@ import { fileURLToPath } from "node:url";
 
 const projectRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const SOURCE_DIR = path.join(projectRoot, "app");
-const SOURCE_EXTENSIONS = new Set([".tsx", ".ts", ".jsx", ".js"]);
+const ROOT_SOURCES = [path.join(projectRoot, "mdx-components.tsx")];
+const SOURCE_EXTENSIONS = new Set([".tsx", ".ts", ".jsx", ".js", ".mdx"]);
 
 const TAILWIND_PALETTE = [
   "black",
@@ -110,7 +117,7 @@ async function collectSources(directory) {
 
 const violations = [];
 
-for (const file of await collectSources(SOURCE_DIR)) {
+for (const file of [...(await collectSources(SOURCE_DIR)), ...ROOT_SOURCES]) {
   const lines = (await readFile(file, "utf8")).split(/\r?\n/);
   lines.forEach((rawLine, index) => {
     const line = rawLine.replace(NON_STYLE_ATTRIBUTES, "");
@@ -137,4 +144,7 @@ if (violations.length > 0) {
   process.exit(1);
 }
 
-console.log(`check:tokens — no raw values in ${path.relative(projectRoot, SOURCE_DIR)}`);
+console.log(
+  `check:tokens — no raw values in ${path.relative(projectRoot, SOURCE_DIR)} or ` +
+    ROOT_SOURCES.map((file) => path.relative(projectRoot, file)).join(", "),
+);

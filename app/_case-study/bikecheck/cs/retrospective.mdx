@@ -1,0 +1,15 @@
+{/* Zástupný text. Skutečné texty jsou ticket 14. */}
+
+Rozhodnutí, které se vyplatilo, bylo držet opotřebení na serveru jako odvozenou
+hodnotu. Stavělo se pomaleji než uložit číslo a aktualizovat ho, a je důvodem,
+proč nikdy nenastala chyba, kdy opotřebení komponenty nesouhlasilo s jízdami,
+které ho způsobily.
+
+Rozhodnutí, ke kterému je potřeba se vrátit, je offline model. Pro případ, na
+který byl postavený, je správný, a pro případ, který se objevil později, je
+neohrabaný — tedy pro cyklistu, který po víkendu mimo domov zapisuje několik
+jízd naráz.
+
+Co bych udělal jinak: napsal bych nejdřív seed data. Většina času ztraceného
+laděním na začátku byl čas strávený ručním sestavováním stavu, který test
+potřeboval.

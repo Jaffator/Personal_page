@@ -1,0 +1,13 @@
+{/* Zástupný text. Skutečné texty jsou ticket 14. */}
+
+Tři části: frontend v Reactu zabalený Capacitorem do androidové aplikace, API v
+NestJS a PostgreSQL přes Prismu.
+
+Doména žije na serveru. Kolo, jeho komponenty a jízdy, které je opotřebovávají,
+jsou namodelované jednou — ve schématu databáze — a aplikace tento model čte
+místo toho, aby si držela jeho druhou verzi. Opotřebení se odvozuje z dat o
+jízdách, místo aby se ukládalo jako číslo, které je nutné udržovat správné.
+
+Každá doména má vlastní controller a service a byznysová logika sedí v service.
+Neexistuje sdílená vrstva, do které sahá každá funkce — právě ta bývá první, co
+shnije.

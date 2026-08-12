@@ -1,0 +1,13 @@
+{/* Placeholder prose. The real copy is ticket 14. */}
+
+The decision that paid off was putting wear on the server as a derived value. It
+was slower to build than storing a number and updating it, and it is the reason
+there has never been a bug where a component's wear disagreed with the rides that
+caused it.
+
+The decision to revisit is the offline model. It is correct for the case it was
+built for and awkward for the case that turned up later, which is a rider logging
+several rides at once after a weekend away.
+
+What I would do differently is write the seed data first. Most of the time lost to
+debugging early on was time spent constructing, by hand, the state a test needed.

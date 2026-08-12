@@ -2,7 +2,9 @@
 
 Every colour, size, rule weight and focus treatment on the site is declared once, in `app/globals.css`. Component code names tokens and never values.
 
-Two things hold that line. Tailwind's own palette, type scale, containers and font stacks are **cleared** (`--color-*: initial` and friends), so `text-gray-500`, `text-4xl` and `max-w-2xl` are not classes that exist — the table below is the whole vocabulary. And `npm run check:tokens` fails the build if a component writes a hex colour, a palette colour, an arbitrary value or an inline style.
+Two things hold that line. Tailwind's own palette, type scale, containers and font stacks are **cleared** (`--color-*: initial` and friends), so `text-gray-500`, `text-4xl` and `max-w-2xl` are not classes that exist — the table below is the whole vocabulary. And `npm run check:tokens` fails the build if a component writes a hex colour, a palette colour, an arbitrary value or an inline style. It scans `app/`, `mdx-components.tsx` and every `.mdx` prose document, so Case Study prose is held to the same bar as the components around it.
+
+Prose written in MDX is styled in one place — `mdx-components.tsx` — which binds each Markdown element to a token utility. A paragraph in a Case Study is therefore the same paragraph as anywhere else on the site, and no prose document sets its own type.
 
 ## The tokens
 
