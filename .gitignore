@@ -21,6 +21,11 @@
 /.next/
 /out/
 
+# Social preview cards. Drawn from the tokens and the dictionaries by
+# scripts/build-og-images.mjs on every build, so a committed copy would be a
+# stale second version of something the build already produces.
+app/**/opengraph-image.png
+
 # production
 /build
 

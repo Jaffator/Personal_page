@@ -2,8 +2,14 @@ import type { Metadata } from "next";
 import { dictionaries } from "./dictionaries";
 import { defaultLocale, locales, pathTo, type Locale, type RouteKey } from "./routes";
 
-/** The origin every canonical and alternate URL is resolved against. */
-const SITE_URL = new URL("https://jardalufi.cz");
+/**
+ * The origin every canonical and alternate URL is resolved against.
+ *
+ * Exported because it is also what the social preview images are resolved
+ * against, and a page that declares one without it — the not-found page — has
+ * its card announced under `localhost`.
+ */
+export const SITE_URL = new URL("https://jardalufi.cz");
 
 /** Open Graph wants a language and a territory, unlike `hreflang`. */
 const OPEN_GRAPH_LOCALES: Record<Locale, string> = { en: "en_GB", cs: "cs_CZ" };

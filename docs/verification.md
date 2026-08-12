@@ -88,6 +88,14 @@ passes accessibility, overflow and audit checks quite happily.
   no level; and the two locales are not the same text. Assertions are by
   structure rather than by wording, so ticket 14 can rewrite every word without
   touching this file. See [content.md](content.md).
+- **`tests/social-preview.spec.ts`** — every route declares a social preview
+  image at an absolute URL, states its width and height, and asks to be
+  rendered as a large card rather than a thumbnail; the declared URL is fetched
+  and what comes back is a PNG of 1200×630 with something actually drawn on it;
+  no two routes share one card; and each locale's card is drawn from its own
+  title rather than reusing the English one. It reads the tags and follows the
+  URL exactly as a crawler would, so it knows nothing about how the image was
+  produced. See [social-preview.md](social-preview.md).
 - **`tests/not-found.spec.ts`** — an unknown path answers 404 with the site's
   own page, not the framework's, and is scanned by axe in both themes. It sits
   outside `routes.ts` because it is the one page that must not return 200.
@@ -110,3 +118,9 @@ That inventory is written out by hand rather than imported from
 `app/_locale/routes.ts`, on purpose. The suite's value is that it asserts the
 built site from the outside; a suite that derived the Czech path from the same
 function the site uses would agree with a bug in that function.
+
+The route also needs somewhere to put its social preview card — one entry per
+locale in `IMAGE_DIRECTORIES` in `scripts/build-og-images.mjs`, naming the
+directory that holds that route's `page.tsx`. The card itself is drawn without
+further help. Forgetting this fails the build rather than shipping a route
+whose link renders as a bare URL; see [social-preview.md](social-preview.md).
